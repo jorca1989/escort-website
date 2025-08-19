@@ -495,6 +495,7 @@ export default function CriarAnuncioPage() {
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
                 >
                   <option value="">Selecione</option>
+                  <option value="15 minutos">15 minutos</option>
                   <option value="30 minutos">30 minutos</option>
                   <option value="1 hora">1 hora</option>
                   <option value="2 horas">2 horas</option>
@@ -706,9 +707,9 @@ export default function CriarAnuncioPage() {
             <p className="text-gray-600">Complete os passos para criar seu perfil</p>
           </div>
 
-          {/* Progress Steps */}
+          {/* Progress Steps - Fixed Layout */}
           <div className="mb-8">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-center space-x-2">
               {steps.map((step, index) => (
                 <div key={step.number} className="flex items-center">
                   <div className={`flex items-center justify-center w-8 h-8 rounded-full ${
@@ -716,13 +717,13 @@ export default function CriarAnuncioPage() {
                   }`}>
                     {step.number}
                   </div>
-                  <span className={`ml-2 text-sm font-medium ${
+                  <span className={`ml-2 text-xs font-medium ${
                     currentStep >= step.number ? 'text-red-600' : 'text-gray-500'
                   }`}>
                     {step.title}
                   </span>
                   {index < steps.length - 1 && (
-                    <div className={`w-16 h-0.5 mx-4 ${
+                    <div className={`w-8 h-0.5 mx-2 ${
                       currentStep > step.number ? 'bg-red-600' : 'bg-gray-200'
                     }`} />
                   )}

@@ -158,10 +158,13 @@ export async function POST(request: NextRequest) {
     });
 
     // Handle photo uploads (simplified - in production you'd upload to cloud storage)
+    const galleryMedia = formData.getAll('galleryMedia') as File[];
+    const comparisonMedia = formData.getAll('comparisonMedia') as File[];
+    
     const allMedia = [
       ...photos.map(file => ({ file, type: 'PHOTO' })),
-      ...formData.getAll('galleryMedia').map(file => ({ file: file as File, type: 'GALLERY' })),
-      ...formData.getAll('comparisonMedia').map(file => ({ file: file as File, type: 'COMPARISON' }))
+      ...galleryMedia.map(file => ({ file, type: 'GALLERY' })),
+      ...comparisonMedia.map(file => ({ file, type: 'COMPARISON' }))
     ];
 
     if (allMedia.length > 0) {
@@ -239,6 +242,13 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error creating listing:', error);
+    
+    // Log more details about the error
+    if (error instanceof Error) {
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+    }
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

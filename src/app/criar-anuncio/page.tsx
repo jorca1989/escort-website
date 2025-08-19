@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -99,7 +99,42 @@ export default function CriarAnuncioPage() {
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const router = useRouter();
+
+  // Load saved form data from localStorage on component mount
+  useEffect(() => {
+    const savedFormData = localStorage.getItem('criarAnuncioFormData');
+    if (savedFormData) {
+      try {
+        const parsed = JSON.parse(savedFormData);
+        setFormData(prev => ({ ...prev, ...parsed }));
+      } catch (error) {
+        console.error('Error loading saved form data:', error);
+      }
+    }
+  }, []);
+
+  // Save form data to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('criarAnuncioFormData', JSON.stringify(formData));
+  }, [formData]);
+
+  // Check if there's saved data and show notification
+  useEffect(() => {
+    const savedFormData = localStorage.getItem('criarAnuncioFormData');
+    if (savedFormData) {
+      try {
+        const parsed = JSON.parse(savedFormData);
+        if (parsed.name || parsed.description) {
+          // Show a subtle notification that data was restored
+          console.log('Form data restored from previous session');
+        }
+      } catch (error) {
+        console.error('Error checking saved form data:', error);
+      }
+    }
+  }, []);
 
   const steps = [
     { number: 1, title: 'Informações Básicas' },
@@ -218,6 +253,16 @@ export default function CriarAnuncioPage() {
     setError('');
 
     try {
+      // Check if user is authenticated by trying to get their profile
+      const authCheck = await fetch('/api/user/profile');
+      
+      if (!authCheck.ok) {
+        // User is not authenticated, show auth modal
+        setShowAuthModal(true);
+        setLoading(false);
+        return;
+      }
+
       const formDataToSend = new FormData();
       
       // Add all form data
@@ -254,6 +299,8 @@ export default function CriarAnuncioPage() {
         throw new Error(data.error || 'Failed to create listing');
       }
 
+      // Clear saved form data after successful submission
+      localStorage.removeItem('criarAnuncioFormData');
       router.push('/dashboard');
 
     } catch (error) {
@@ -1066,6 +1113,46 @@ export default function CriarAnuncioPage() {
           </form>
         </div>
       </div>
+
+      {/* Authentication Modal */}
+      {showAuthModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+            <div className="text-center">
+              <div className="text-4xl mb-4">🔐</div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">
+                Login Necessário
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Para publicar seu anúncio, você precisa estar logado. Suas informações foram salvas e estarão disponíveis após o login.
+              </p>
+              
+              <div className="space-y-3">
+                <Link
+                  href="/login"
+                  className="block w-full bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200"
+                >
+                  Fazer Login
+                </Link>
+                
+                <Link
+                  href="/criar-perfil"
+                  className="block w-full bg-gray-600 hover:bg-gray-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200"
+                >
+                  Criar Conta
+                </Link>
+                
+                <button
+                  onClick={() => setShowAuthModal(false)}
+                  className="block w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-3 px-4 rounded-lg transition duration-200"
+                >
+                  Continuar Editando
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 } 

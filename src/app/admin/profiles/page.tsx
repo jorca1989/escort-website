@@ -3,217 +3,151 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-interface Profile {
+interface User {
   id: string;
-  name: string;
-  age: number;
-  city: string;
-  price: number;
-  isVerified: boolean;
-  isOnline: boolean;
+  email: string;
+  role: string;
   createdAt: string;
+  profile?: {
+    id: string;
+    name: string;
+    age: number;
+    city: string;
+    isVerified: boolean;
+    isOnline: boolean;
+    rating: number;
+  };
 }
 
-export default function ProfilesPage() {
-  const [profiles, setProfiles] = useState<Profile[]>([]);
+export default function AdminProfilesPage() {
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCity, setSelectedCity] = useState('all');
-  const [selectedStatus, setSelectedStatus] = useState('all');
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    fetchProfiles();
+    fetchUsers();
   }, []);
 
-  const fetchProfiles = async () => {
+  const fetchUsers = async () => {
     try {
-      const response = await fetch('/api/profiles');
+      const response = await fetch('/api/admin/profiles');
+      if (!response.ok) {
+        throw new Error('Failed to fetch users');
+      }
       const data = await response.json();
-      setProfiles(data.profiles);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching profiles:', error);
+      setUsers(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch users');
+    } finally {
       setLoading(false);
     }
   };
 
-  const filteredProfiles = profiles.filter((profile) => {
-    const matchesSearch = profile.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCity = selectedCity === 'all' || profile.city === selectedCity;
-    const matchesStatus = selectedStatus === 'all' || 
-      (selectedStatus === 'verified' && profile.isVerified) ||
-      (selectedStatus === 'online' && profile.isOnline);
+  const getRoleBadge = (role: string) => {
+    const colors = {
+      ADMIN: 'bg-red-100 text-red-800',
+      ESCORT: 'bg-pink-100 text-pink-800',
+      USER: 'bg-blue-100 text-blue-800'
+    };
+    return (
+      <span className={`px-2 py-1 text-xs font-medium rounded-full ${colors[role as keyof typeof colors] || 'bg-gray-100 text-gray-800'}`}>
+        {role}
+      </span>
+    );
+  };
 
-    return matchesSearch && matchesCity && matchesStatus;
-  });
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-lg">Loading users...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-red-600">Error: {error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Profiles</h1>
-        <Link
-          href="/admin/profiles/new"
-          className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700"
+        <h1 className="text-2xl font-bold text-gray-900">All Users & Profiles</h1>
+        <Link 
+          href="/admin" 
+          className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700"
         >
-          Add New Profile
+          Back to Dashboard
         </Link>
       </div>
 
-      {/* Filters */}
-      <div className="bg-white rounded-lg shadow p-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label htmlFor="search" className="block text-sm font-medium text-gray-700">
-              Search
-            </label>
-            <input
-              type="text"
-              id="search"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500"
-              placeholder="Search by name..."
-            />
-          </div>
-          <div>
-            <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-              City
-            </label>
-            <select
-              id="city"
-              value={selectedCity}
-              onChange={(e) => setSelectedCity(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500"
-            >
-              <option value="all">All Cities</option>
-              <option value="Lisboa">Lisboa</option>
-              <option value="Porto">Porto</option>
-              <option value="Faro">Faro</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="status" className="block text-sm font-medium text-gray-700">
-              Status
-            </label>
-            <select
-              id="status"
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500"
-            >
-              <option value="all">All Status</option>
-              <option value="verified">Verified</option>
-              <option value="online">Online</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Profiles Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Profile
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                City
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Price
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Created
-              </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {loading ? (
-              <tr>
-                <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
-                  Loading...
-                </td>
-              </tr>
-            ) : filteredProfiles.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
-                  No profiles found
-                </td>
-              </tr>
-            ) : (
-              filteredProfiles.map((profile) => (
-                <tr key={profile.id}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-10 w-10">
-                        <img
-                          className="h-10 w-10 rounded-full"
-                          src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                            profile.name
-                          )}&background=random`}
-                          alt=""
-                        />
-                      </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">
-                          {profile.name}
-                        </div>
-                        <div className="text-sm text-gray-500">{profile.age} years</div>
-                      </div>
+      <div className="bg-white shadow overflow-hidden sm:rounded-md">
+        <ul className="divide-y divide-gray-200">
+          {users.map((user) => (
+            <li key={user.id} className="px-6 py-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                      <span className="text-sm font-medium text-gray-700">
+                        {user.email.charAt(0).toUpperCase()}
+                      </span>
                     </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{profile.city}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">€{profile.price}/h</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex space-x-2">
-                      {profile.isVerified && (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  </div>
+                  <div className="ml-4">
+                    <div className="text-sm font-medium text-gray-900">
+                      {user.email}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      Joined: {new Date(user.createdAt).toLocaleDateString()}
+                    </div>
+                    {user.profile && (
+                      <div className="text-sm text-gray-500">
+                        Profile: {user.profile.name} ({user.profile.age} years, {user.profile.city})
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  {getRoleBadge(user.role)}
+                  {user.profile && (
+                    <>
+                      {user.profile.isVerified && (
+                        <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
                           Verified
                         </span>
                       )}
-                      {profile.isOnline && (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      {user.profile.isOnline && (
+                        <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
                           Online
                         </span>
                       )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {new Date(profile.createdAt).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <Link
-                      href={`/admin/profiles/${profile.id}`}
-                      className="text-pink-600 hover:text-pink-900 mr-4"
-                    >
-                      Edit
-                    </Link>
-                    <button
-                      onClick={() => {
-                        // Handle delete
-                      }}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+                      <span className="text-sm text-gray-500">
+                        ⭐ {user.profile.rating.toFixed(1)}
+                      </span>
+                    </>
+                  )}
+                  <Link
+                    href={`/admin/profiles/${user.id}`}
+                    className="text-pink-600 hover:text-pink-900 text-sm font-medium"
+                  >
+                    View Details
+                  </Link>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
+
+      {users.length === 0 && (
+        <div className="text-center py-12">
+          <div className="text-gray-500">No users found</div>
+        </div>
+      )}
     </div>
   );
 } 

@@ -43,11 +43,15 @@ interface FormData {
       oneHour: string;
       twoHours: string;
       overnight: string;
+      fifteenMin?: string;
+      thirtyMin?: string;
     };
     travel: {
       oneHour: string;
       twoHours: string;
       overnight: string;
+      fifteenMin?: string;
+      thirtyMin?: string;
     };
   };
   
@@ -566,6 +570,39 @@ export default function CriarAnuncioPage() {
 
             {formData.showPricing ? (
               <div className="space-y-8">
+                {/* Minimum Duration Pricing */}
+                <div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-4">Tarifas - Duração Mínima</h3>
+                  <div className="space-y-4">
+                    {formData.minDuration === '15 minutos' && (
+                      <div className="flex items-center space-x-4">
+                        <span className="w-20 text-sm font-medium text-gray-700">15 min:</span>
+                        <input
+                          type="number"
+                          value={formData.pricing.local.fifteenMin || ''}
+                          onChange={(e) => handlePricingChange('local', 'fifteenMin', e.target.value)}
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                          placeholder="80"
+                        />
+                        <span className="text-sm text-gray-500">€</span>
+                      </div>
+                    )}
+                    {formData.minDuration === '30 minutos' && (
+                      <div className="flex items-center space-x-4">
+                        <span className="w-20 text-sm font-medium text-gray-700">30 min:</span>
+                        <input
+                          type="number"
+                          value={formData.pricing.local.thirtyMin || ''}
+                          onChange={(e) => handlePricingChange('local', 'thirtyMin', e.target.value)}
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                          placeholder="120"
+                        />
+                        <span className="text-sm text-gray-500">€</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 <div>
                   <h3 className="text-lg font-medium text-gray-900 mb-4">Tarifas - Meu Local</h3>
                   <div className="space-y-4">
@@ -608,6 +645,33 @@ export default function CriarAnuncioPage() {
                 <div>
                   <h3 className="text-lg font-medium text-gray-900 mb-4">Tarifas - Deslocação</h3>
                   <div className="space-y-4">
+                    {/* Minimum Duration Travel Pricing */}
+                    {formData.minDuration === '15 minutos' && (
+                      <div className="flex items-center space-x-4">
+                        <span className="w-20 text-sm font-medium text-gray-700">15 min:</span>
+                        <input
+                          type="number"
+                          value={formData.pricing.travel.fifteenMin || ''}
+                          onChange={(e) => handlePricingChange('travel', 'fifteenMin', e.target.value)}
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                          placeholder="100"
+                        />
+                        <span className="text-sm text-gray-500">€</span>
+                      </div>
+                    )}
+                    {formData.minDuration === '30 minutos' && (
+                      <div className="flex items-center space-x-4">
+                        <span className="w-20 text-sm font-medium text-gray-700">30 min:</span>
+                        <input
+                          type="number"
+                          value={formData.pricing.travel.thirtyMin || ''}
+                          onChange={(e) => handlePricingChange('travel', 'thirtyMin', e.target.value)}
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                          placeholder="150"
+                        />
+                        <span className="text-sm text-gray-500">€</span>
+                      </div>
+                    )}
                     <div className="flex items-center space-x-4">
                       <span className="w-20 text-sm font-medium text-gray-700">1 hora:</span>
                       <input

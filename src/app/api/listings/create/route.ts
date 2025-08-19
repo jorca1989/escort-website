@@ -178,16 +178,27 @@ export async function POST(request: NextRequest) {
 
     // Store pricing information if provided
     if (showPricing && pricing) {
-      // You might want to create a separate pricing table or store as JSON
-      // For now, we'll store it in the listing description
-      const pricingInfo = `\n\nPreços:\nLocal: 1h €${pricing.local?.oneHour || 'N/A'}, 2h €${pricing.local?.twoHours || 'N/A'}, Pernoite €${pricing.local?.overnight || 'N/A'}\nDeslocação: 1h €${pricing.travel?.oneHour || 'N/A'}, 2h €${pricing.travel?.twoHours || 'N/A'}, Pernoite €${pricing.travel?.overnight || 'N/A'}`;
+      let pricingInfo = `\n\nPreços:\n`;
       
-      await prisma.listing.update({
-        where: { id: listing.id },
-        data: {
-          description: listing.description + pricingInfo
-        }
-      });
+      // Add minimum duration pricing if selected
+      if (pricing.local?.fifteenMin) {
+        pricingInfo += `Local 15min: €${pricing.local.fifteenMin}\n`;
+      }
+      if (pricing.local?.thirtyMin) {
+        pricingInfo += `Local 30min: €${pricing.local.thirtyMin}\n`;
+      }
+      if (pricing.travel?.fifteenMin) {
+        pricingInfo += `Deslocação 15min: €${pricing.travel.fifteenMin}\n`;
+      }
+      if (pricing.travel?.thirtyMin) {
+        pricingInfo += `Deslocação 30min: €${pricing.travel.thirtyMin}\n`;
+      }
+      
+      // Add regular pricing
+      pricingInfo += `Local: 1h €${pricing.local?.oneHour || 'N/A'}, 2h €${pricing.local?.twoHours || 'N/A'}, Pernoite €${pricing.local?.overnight || 'N/A'}\n`;
+      pricingInfo += `Deslocação: 1h €${pricing.travel?.oneHour || 'N/A'}, 2h €${pricing.travel?.twoHours || 'N/A'}, Pernoite €${pricing.travel?.overnight || 'N/A'}`;
+      
+      await prisma.listing.update({ where: { id: listing.id }, data: { description: listing.description + pricingInfo } });
     }
 
     return NextResponse.json({

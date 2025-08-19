@@ -63,6 +63,16 @@ export async function POST(request: NextRequest) {
     // Photos
     const photos = formData.getAll('photos') as File[];
 
+    // Handle media files properly
+    const galleryMedia = formData.getAll('galleryMedia') as File[];
+    const comparisonMedia = formData.getAll('comparisonMedia') as File[];
+    
+    console.log('Files received:', {
+      photos: photos.length,
+      galleryMedia: galleryMedia.length,
+      comparisonMedia: comparisonMedia.length
+    });
+
     // Validate required fields
     if (!name || !age || !city || !phone || !description) {
       return NextResponse.json(
@@ -158,31 +168,39 @@ export async function POST(request: NextRequest) {
     });
 
     // Handle photo uploads (simplified - in production you'd upload to cloud storage)
-    const galleryMedia = formData.getAll('galleryMedia') as File[];
-    const comparisonMedia = formData.getAll('comparisonMedia') as File[];
-    
     const allMedia = [
-      ...photos.map(file => ({ file, type: 'PHOTO' })),
+      ...photos.map(file => ({ file, type: 'GALLERY' })),
       ...galleryMedia.map(file => ({ file, type: 'GALLERY' })),
       ...comparisonMedia.map(file => ({ file, type: 'COMPARISON' }))
     ];
+
+    console.log('Total media files to process:', allMedia.length);
 
     if (allMedia.length > 0) {
       const mediaPromises = allMedia.slice(0, 10).map(async (mediaItem, index) => {
         try {
           const { file, type } = mediaItem;
           
+          console.log(`Processing file ${index}:`, {
+            name: file.name,
+            type: file.type,
+            size: file.size,
+            mediaType: type
+          });
+          
           // Determine media type based on file type
           const isVideo = file.type.startsWith('video/');
-          const mediaType = isVideo ? 'VIDEO' : 'PHOTO';
+          const mediaType = isVideo ? 'VIDEO' : 'IMAGE';
           
           // In a real app, you'd upload to S3, Cloudinary, etc.
           // For now, we'll just store the filename and create media records
           const extension = isVideo ? '.mp4' : '.jpg';
           const filename = `profile-${profile.id}-${type}-${index}-${Date.now()}${extension}`;
           
+          console.log(`Creating media record for: ${filename}`);
+          
           // Create media record for the profile
-          return prisma.media.create({
+          const mediaRecord = await prisma.media.create({
             data: {
               url: `/uploads/${filename}`,
               type: mediaType,
@@ -190,6 +208,9 @@ export async function POST(request: NextRequest) {
               listingId: null // This is for profile gallery
             }
           });
+          
+          console.log(`Successfully created media record:`, mediaRecord.id);
+          return mediaRecord;
         } catch (error) {
           console.error(`Error creating media record for file ${index}:`, error);
           // Continue with other files even if one fails
@@ -199,7 +220,8 @@ export async function POST(request: NextRequest) {
 
       // Wait for all media records to be created
       const mediaResults = await Promise.all(mediaPromises);
-      console.log(`Created ${mediaResults.filter(r => r !== null).length} media records`);
+      const successfulMedia = mediaResults.filter(r => r !== null);
+      console.log(`Successfully created ${successfulMedia.length} out of ${allMedia.length} media records`);
     }
 
     // Store pricing information if provided

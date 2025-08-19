@@ -160,20 +160,35 @@ export async function POST(request: NextRequest) {
     // Handle photo uploads (simplified - in production you'd upload to cloud storage)
     if (photos.length > 0) {
       const mediaPromises = photos.slice(0, 10).map(async (photo, index) => {
-        // In a real app, you'd upload to S3, Cloudinary, etc.
-        // For now, we'll just store the filename
-        const filename = `profile-${profile.id}-${index}-${Date.now()}.jpg`;
-        
-        return prisma.media.create({
-          data: {
-            url: `/uploads/${filename}`,
-            type: 'PHOTO',
-            profileId: profile.id
-          }
-        });
+        try {
+          // Determine media type based on file type
+          const isVideo = photo.type.startsWith('video/');
+          const mediaType = isVideo ? 'VIDEO' : 'PHOTO';
+          
+          // In a real app, you'd upload to S3, Cloudinary, etc.
+          // For now, we'll just store the filename and create media records
+          const extension = isVideo ? '.mp4' : '.jpg';
+          const filename = `profile-${profile.id}-${index}-${Date.now()}${extension}`;
+          
+          // Create media record for the profile
+          return prisma.media.create({
+            data: {
+              url: `/uploads/${filename}`,
+              type: mediaType,
+              profileId: profile.id,
+              listingId: null // This is for profile gallery
+            }
+          });
+        } catch (error) {
+          console.error(`Error creating media record for file ${index}:`, error);
+          // Continue with other files even if one fails
+          return null;
+        }
       });
 
-      await Promise.all(mediaPromises);
+      // Wait for all media records to be created
+      const mediaResults = await Promise.all(mediaPromises);
+      console.log(`Created ${mediaResults.filter(r => r !== null).length} media records`);
     }
 
     // Store pricing information if provided

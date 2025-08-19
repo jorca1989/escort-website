@@ -726,26 +726,35 @@ export default function CriarAnuncioPage() {
               <input
                 type="file"
                 multiple
-                accept="image/*"
+                accept="image/*,video/*"
                 onChange={handleFileChange}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
               <p className="mt-1 text-sm text-gray-500">
-                Formatos aceitos: JPG, PNG. Tamanho máximo: 5MB por foto.
+                Formatos aceitos: JPG, PNG, MP4, MOV. Tamanho máximo: 5MB por arquivo.
               </p>
             </div>
 
             {formData.photos.length > 0 && (
               <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">Fotos selecionadas:</h3>
+                <h3 className="text-sm font-medium text-gray-700 mb-2">Arquivos selecionados:</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {formData.photos.map((photo, index) => (
+                  {formData.photos.map((file, index) => (
                     <div key={index} className="relative">
-                      <img
-                        src={URL.createObjectURL(photo)}
-                        alt={`Foto ${index + 1}`}
-                        className="w-full h-24 object-cover rounded-lg"
-                      />
+                      {file.type.startsWith('image/') ? (
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt={`Arquivo ${index + 1}`}
+                          className="w-full h-24 object-cover rounded-lg"
+                        />
+                      ) : (
+                        <div className="w-full h-24 bg-gray-200 rounded-lg flex items-center justify-center">
+                          <div className="text-center">
+                            <div className="text-2xl mb-1">🎥</div>
+                            <div className="text-xs text-gray-600">{file.name}</div>
+                          </div>
+                        </div>
+                      )}
                       <span className="absolute top-1 right-1 bg-black bg-opacity-50 text-white text-xs px-1 rounded">
                         {index + 1}
                       </span>
@@ -754,6 +763,16 @@ export default function CriarAnuncioPage() {
                 </div>
               </div>
             )}
+
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h4 className="text-sm font-medium text-blue-900 mb-2">Sobre a Galeria de Mídia</h4>
+              <ul className="text-sm text-blue-800 space-y-1">
+                <li>• <strong>Fotos:</strong> Serão exibidas na "Galeria de Mídia" do seu perfil</li>
+                <li>• <strong>Vídeos:</strong> Podem ser usados como "Mídia de Comparação"</li>
+                <li>• <strong>Verificação:</strong> Sua mídia será marcada como verificada</li>
+                <li>• <strong>Qualidade:</strong> Use imagens de boa qualidade para melhor resultado</li>
+              </ul>
+            </div>
           </div>
         );
 

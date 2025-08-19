@@ -63,6 +63,7 @@ export async function POST(request: NextRequest) {
         title,
         description,
         city,
+        location: city, // Use city as location for now
         age,
         phone,
         price,
@@ -83,7 +84,7 @@ export async function POST(request: NextRequest) {
         return prisma.media.create({
           data: {
             url: `/uploads/${filename}`,
-            type: 'IMAGE',
+            type: 'PHOTO',
             listingId: listing.id
           }
         });

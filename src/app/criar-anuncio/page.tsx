@@ -383,7 +383,7 @@ export default function CriarAnuncioPage() {
                   value={formData.weight}
                   onChange={(e) => handleInputChange('weight', e.target.value)}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
-                  placeholder="55"
+                  placeholder={formData.gender === 'Masculino' ? '75' : formData.gender === 'Feminino' ? '55' : '65'}
                 />
               </div>
 
@@ -394,7 +394,7 @@ export default function CriarAnuncioPage() {
                   value={formData.height}
                   onChange={(e) => handleInputChange('height', e.target.value)}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
-                  placeholder="1.68"
+                  placeholder={formData.gender === 'Masculino' ? '1.75' : formData.gender === 'Feminino' ? '1.68' : '1.70'}
                 />
               </div>
             </div>
@@ -459,14 +459,16 @@ export default function CriarAnuncioPage() {
                   value={formData.shoeSize}
                   onChange={(e) => handleInputChange('shoeSize', e.target.value)}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
-                  placeholder="37"
+                  placeholder={formData.gender === 'Masculino' ? '42' : formData.gender === 'Feminino' ? '37' : '39'}
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Silicone</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  {formData.gender === 'Masculino' ? 'Silicone' : formData.gender === 'Feminino' ? 'Silicone' : 'Silicone'}
+                </label>
                 <select
                   value={formData.silicone}
                   onChange={(e) => handleInputChange('silicone', e.target.value)}
@@ -499,14 +501,16 @@ export default function CriarAnuncioPage() {
                   value={formData.piercings}
                   onChange={(e) => handleInputChange('piercings', e.target.value)}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
-                  placeholder="Orelhas"
+                  placeholder={formData.gender === 'Masculino' ? 'Orelha, nariz' : formData.gender === 'Feminino' ? 'Orelhas, umbigo' : 'Orelhas'}
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Fumadora</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  {formData.gender === 'Masculino' ? 'Fumador' : formData.gender === 'Feminino' ? 'Fumadora' : 'Fumador/a'}
+                </label>
                 <select
                   value={formData.smoker}
                   onChange={(e) => handleInputChange('smoker', e.target.value)}

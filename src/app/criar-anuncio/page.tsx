@@ -143,6 +143,23 @@ export default function CriarAnuncioPage() {
     }
   };
 
+  const removeFile = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      photos: prev.photos.filter((_, i) => i !== index)
+    }));
+  };
+
+  const addFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+      setFormData(prev => ({
+        ...prev,
+        photos: [...prev.photos, ...newFiles].slice(0, 10) // Keep max 10 files
+      }));
+    }
+  };
+
   const nextStep = () => {
     if (currentStep < steps.length) {
       setCurrentStep(currentStep + 1);
@@ -720,58 +737,181 @@ export default function CriarAnuncioPage() {
 
       case 5:
         return (
-          <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Fotos (máximo 10)</label>
-              <input
-                type="file"
-                multiple
-                accept="image/*,video/*"
-                onChange={handleFileChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
-              <p className="mt-1 text-sm text-gray-500">
-                Formatos aceitos: JPG, PNG, MP4, MOV. Tamanho máximo: 5MB por arquivo.
-              </p>
+          <div className="space-y-8">
+            {/* Main Upload Section */}
+            <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+              <div className="space-y-4">
+                <div className="text-4xl">📸</div>
+                <h3 className="text-lg font-medium text-gray-900">Adicionar Fotos e Vídeos</h3>
+                <p className="text-sm text-gray-600">
+                  Arraste arquivos aqui ou clique para selecionar
+                </p>
+                <div className="flex justify-center">
+                  <label className="bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-lg cursor-pointer transition duration-200">
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*,video/*"
+                      onChange={addFiles}
+                      className="hidden"
+                    />
+                    Escolher Arquivos
+                  </label>
+                </div>
+                <p className="text-xs text-gray-500">
+                  Formatos: JPG, PNG, MP4, MOV • Máximo: 5MB por arquivo • Total: 10 arquivos
+                </p>
+              </div>
             </div>
 
+            {/* Selected Files Display */}
             {formData.photos.length > 0 && (
-              <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">Arquivos selecionados:</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-medium text-gray-900">
+                    Arquivos Selecionados ({formData.photos.length}/10)
+                  </h3>
+                  <button
+                    onClick={() => setFormData(prev => ({ ...prev, photos: [] }))}
+                    className="text-red-600 hover:text-red-700 text-sm font-medium"
+                  >
+                    Remover Todos
+                  </button>
+                </div>
+                
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {formData.photos.map((file, index) => (
-                    <div key={index} className="relative">
-                      {file.type.startsWith('image/') ? (
-                        <img
-                          src={URL.createObjectURL(file)}
-                          alt={`Arquivo ${index + 1}`}
-                          className="w-full h-24 object-cover rounded-lg"
-                        />
-                      ) : (
-                        <div className="w-full h-24 bg-gray-200 rounded-lg flex items-center justify-center">
-                          <div className="text-center">
-                            <div className="text-2xl mb-1">🎥</div>
-                            <div className="text-xs text-gray-600">{file.name}</div>
+                    <div key={index} className="relative group">
+                      <div className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
+                        {file.type.startsWith('image/') ? (
+                          <img
+                            src={URL.createObjectURL(file)}
+                            alt={`Arquivo ${index + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                            <div className="text-center">
+                              <div className="text-3xl mb-2">🎥</div>
+                              <div className="text-xs text-gray-600 px-2">{file.name}</div>
+                            </div>
                           </div>
-                        </div>
-                      )}
-                      <span className="absolute top-1 right-1 bg-black bg-opacity-50 text-white text-xs px-1 rounded">
-                        {index + 1}
-                      </span>
+                        )}
+                      </div>
+                      
+                      {/* Delete Button */}
+                      <button
+                        onClick={() => removeFile(index)}
+                        className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-700 transition duration-200 opacity-0 group-hover:opacity-100"
+                      >
+                        ×
+                      </button>
+                      
+                      {/* File Type Badge */}
+                      <div className="absolute top-2 left-2">
+                        <span className={`px-2 py-1 rounded text-xs font-medium ${
+                          file.type.startsWith('image/') 
+                            ? 'bg-blue-100 text-blue-800' 
+                            : 'bg-purple-100 text-purple-800'
+                        }`}>
+                          {file.type.startsWith('image/') ? '📷 Foto' : '🎥 Vídeo'}
+                        </span>
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
             )}
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h4 className="text-sm font-medium text-blue-900 mb-2">Sobre a Galeria de Mídia</h4>
-              <ul className="text-sm text-blue-800 space-y-1">
-                <li>• <strong>Fotos:</strong> Serão exibidas na "Galeria de Mídia" do seu perfil</li>
-                <li>• <strong>Vídeos:</strong> Podem ser usados como "Mídia de Comparação"</li>
-                <li>• <strong>Verificação:</strong> Sua mídia será marcada como verificada</li>
-                <li>• <strong>Qualidade:</strong> Use imagens de boa qualidade para melhor resultado</li>
-              </ul>
+            {/* Media Sections */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Galeria de Mídia */}
+              <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="text-2xl">🖼️</div>
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900">Galeria de Mídia</h3>
+                    <p className="text-sm text-gray-600">Fotos e vídeos do seu perfil</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-2 text-sm">
+                    <span className="text-green-600">✓</span>
+                    <span>Fotos profissionais</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm">
+                    <span className="text-green-600">✓</span>
+                    <span>Vídeos curtos</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm">
+                    <span className="text-green-600">✓</span>
+                    <span>Mídia verificada</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm">
+                    <span className="text-green-600">✓</span>
+                    <span>Visível no perfil</span>
+                  </div>
+                </div>
+                
+                <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                  <p className="text-xs text-blue-800">
+                    <strong>Dica:</strong> Use fotos de boa qualidade e vídeos curtos para mostrar sua personalidade.
+                  </p>
+                </div>
+              </div>
+
+              {/* Mídia de Comparação */}
+              <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="text-2xl">📊</div>
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900">Mídia de Comparação</h3>
+                    <p className="text-sm text-gray-600">Vídeos para comparação</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-2 text-sm">
+                    <span className="text-purple-600">🎥</span>
+                    <span>Vídeos de demonstração</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm">
+                    <span className="text-purple-600">🎥</span>
+                    <span>Story-like format</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm">
+                    <span className="text-purple-600">🎥</span>
+                    <span>Comparação visual</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm">
+                    <span className="text-purple-600">🎥</span>
+                    <span>Seção especial</span>
+                  </div>
+                </div>
+                
+                <div className="mt-4 p-3 bg-purple-50 rounded-lg">
+                  <p className="text-xs text-purple-800">
+                    <strong>Dica:</strong> Vídeos serão usados na seção "Mídia de Comparação" para mostrar suas características.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Upload Progress Info */}
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+              <div className="flex items-start space-x-3">
+                <div className="text-yellow-600 text-lg">ℹ️</div>
+                <div className="text-sm text-yellow-800">
+                  <p className="font-medium mb-1">Como suas mídias serão organizadas:</p>
+                  <ul className="space-y-1">
+                    <li>• <strong>Fotos:</strong> Aparecem na "Galeria de Mídia" do seu perfil</li>
+                    <li>• <strong>Vídeos:</strong> Podem ser usados tanto na "Galeria" quanto na "Mídia de Comparação"</li>
+                    <li>• <strong>Verificação:</strong> Todas as mídias serão marcadas como verificadas</li>
+                    <li>• <strong>Qualidade:</strong> Recomendamos imagens de alta qualidade para melhor resultado</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         );

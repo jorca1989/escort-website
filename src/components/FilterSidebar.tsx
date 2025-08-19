@@ -16,6 +16,12 @@ interface FilterSidebarProps {
   onAgeChange: (label: string) => void;
   availability: { label: string; checked: boolean }[];
   onAvailabilityChange: (label: string) => void;
+  hairColors: { label: string; checked: boolean }[];
+  onHairColorChange: (label: string) => void;
+  eyeColors: { label: string; checked: boolean }[];
+  onEyeColorChange: (label: string) => void;
+  ethnicities: { label: string; checked: boolean }[];
+  onEthnicityChange: (label: string) => void;
   onClear: () => void;
 }
 
@@ -34,6 +40,12 @@ export default function FilterSidebar({
   onAgeChange,
   availability,
   onAvailabilityChange,
+  hairColors,
+  onHairColorChange,
+  eyeColors,
+  onEyeColorChange,
+  ethnicities,
+  onEthnicityChange,
   onClear,
 }: FilterSidebarProps) {
   return (
@@ -140,6 +152,60 @@ export default function FilterSidebar({
                   className="rounded border-gray-300 text-red-600 focus:ring-red-500"
                 />
                 <span className="ml-2 text-sm">{a.label}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Hair Color */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Cor do Cabelo</label>
+          <div className="space-y-2">
+            {hairColors.map((hair) => (
+              <label key={hair.label} className="flex items-center text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={hair.checked}
+                  onChange={() => onHairColorChange(hair.label)}
+                  className="rounded border-gray-300 text-red-600 focus:ring-red-500"
+                />
+                <span className="ml-2 text-sm">{hair.label}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Eye Color */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Cor dos Olhos</label>
+          <div className="space-y-2">
+            {eyeColors.map((eye) => (
+              <label key={eye.label} className="flex items-center text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={eye.checked}
+                  onChange={() => onEyeColorChange(eye.label)}
+                  className="rounded border-gray-300 text-red-600 focus:ring-red-500"
+                />
+                <span className="ml-2 text-sm">{eye.label}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Ethnicity */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Etnia</label>
+          <div className="space-y-2">
+            {ethnicities.map((ethnicity) => (
+              <label key={ethnicity.label} className="flex items-center text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={ethnicity.checked}
+                  onChange={() => onEthnicityChange(ethnicity.label)}
+                  className="rounded border-gray-300 text-red-600 focus:ring-red-500"
+                />
+                <span className="ml-2 text-sm">{ethnicity.label}</span>
               </label>
             ))}
           </div>

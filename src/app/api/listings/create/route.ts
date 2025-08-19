@@ -158,17 +158,25 @@ export async function POST(request: NextRequest) {
     });
 
     // Handle photo uploads (simplified - in production you'd upload to cloud storage)
-    if (photos.length > 0) {
-      const mediaPromises = photos.slice(0, 10).map(async (photo, index) => {
+    const allMedia = [
+      ...photos.map(file => ({ file, type: 'PHOTO' })),
+      ...formData.getAll('galleryMedia').map(file => ({ file: file as File, type: 'GALLERY' })),
+      ...formData.getAll('comparisonMedia').map(file => ({ file: file as File, type: 'COMPARISON' }))
+    ];
+
+    if (allMedia.length > 0) {
+      const mediaPromises = allMedia.slice(0, 10).map(async (mediaItem, index) => {
         try {
+          const { file, type } = mediaItem;
+          
           // Determine media type based on file type
-          const isVideo = photo.type.startsWith('video/');
+          const isVideo = file.type.startsWith('video/');
           const mediaType = isVideo ? 'VIDEO' : 'PHOTO';
           
           // In a real app, you'd upload to S3, Cloudinary, etc.
           // For now, we'll just store the filename and create media records
           const extension = isVideo ? '.mp4' : '.jpg';
-          const filename = `profile-${profile.id}-${index}-${Date.now()}${extension}`;
+          const filename = `profile-${profile.id}-${type}-${index}-${Date.now()}${extension}`;
           
           // Create media record for the profile
           return prisma.media.create({

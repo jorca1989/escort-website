@@ -57,6 +57,8 @@ interface FormData {
   
   // Media
   photos: File[];
+  galleryMedia: File[];
+  comparisonMedia: File[];
 }
 
 export default function CriarAnuncioPage() {
@@ -90,7 +92,9 @@ export default function CriarAnuncioPage() {
       local: { oneHour: '', twoHours: '', overnight: '' },
       travel: { oneHour: '', twoHours: '', overnight: '' }
     },
-    photos: []
+    photos: [],
+    galleryMedia: [],
+    comparisonMedia: []
   });
   
   const [loading, setLoading] = useState(false);
@@ -160,6 +164,42 @@ export default function CriarAnuncioPage() {
     }
   };
 
+  const moveToGallery = (index: number) => {
+    const file = formData.photos[index];
+    setFormData(prev => ({
+      ...prev,
+      photos: prev.photos.filter((_, i) => i !== index),
+      galleryMedia: [...prev.galleryMedia, file]
+    }));
+  };
+
+  const moveToComparison = (index: number) => {
+    const file = formData.photos[index];
+    setFormData(prev => ({
+      ...prev,
+      photos: prev.photos.filter((_, i) => i !== index),
+      comparisonMedia: [...prev.comparisonMedia, file]
+    }));
+  };
+
+  const moveFromGallery = (index: number) => {
+    const file = formData.galleryMedia[index];
+    setFormData(prev => ({
+      ...prev,
+      galleryMedia: prev.galleryMedia.filter((_, i) => i !== index),
+      photos: [...prev.photos, file]
+    }));
+  };
+
+  const moveFromComparison = (index: number) => {
+    const file = formData.comparisonMedia[index];
+    setFormData(prev => ({
+      ...prev,
+      comparisonMedia: prev.comparisonMedia.filter((_, i) => i !== index),
+      photos: [...prev.photos, file]
+    }));
+  };
+
   const nextStep = () => {
     if (currentStep < steps.length) {
       setCurrentStep(currentStep + 1);
@@ -185,6 +225,14 @@ export default function CriarAnuncioPage() {
         if (key === 'photos') {
           (value as File[]).forEach((file) => {
             formDataToSend.append('photos', file);
+          });
+        } else if (key === 'galleryMedia') {
+          (value as File[]).forEach((file) => {
+            formDataToSend.append('galleryMedia', file);
+          });
+        } else if (key === 'comparisonMedia') {
+          (value as File[]).forEach((file) => {
+            formDataToSend.append('comparisonMedia', file);
           });
         } else if (key === 'pricing') {
           formDataToSend.append('pricing', JSON.stringify(value));
@@ -764,151 +812,181 @@ export default function CriarAnuncioPage() {
               </div>
             </div>
 
-            {/* Selected Files Display */}
+            {/* Media Organization Toggle */}
             {formData.photos.length > 0 && (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-medium text-gray-900">
-                    Arquivos Selecionados ({formData.photos.length}/10)
+              <div className="space-y-6">
+                <div className="text-center">
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    Organizar Mídia ({formData.photos.length} arquivos)
                   </h3>
-                  <button
-                    onClick={() => setFormData(prev => ({ ...prev, photos: [] }))}
-                    className="text-red-600 hover:text-red-700 text-sm font-medium"
-                  >
-                    Remover Todos
-                  </button>
+                  <p className="text-sm text-gray-600">
+                    Arraste ou clique para mover arquivos entre as seções
+                  </p>
                 </div>
-                
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {formData.photos.map((file, index) => (
-                    <div key={index} className="relative group">
-                      <div className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
-                        {file.type.startsWith('image/') ? (
-                          <img
-                            src={URL.createObjectURL(file)}
-                            alt={`Arquivo ${index + 1}`}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                            <div className="text-center">
-                              <div className="text-3xl mb-2">🎥</div>
-                              <div className="text-xs text-gray-600 px-2">{file.name}</div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                      
-                      {/* Delete Button */}
-                      <button
-                        onClick={() => removeFile(index)}
-                        className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-700 transition duration-200 opacity-0 group-hover:opacity-100"
-                      >
-                        ×
-                      </button>
-                      
-                      {/* File Type Badge */}
-                      <div className="absolute top-2 left-2">
-                        <span className={`px-2 py-1 rounded text-xs font-medium ${
-                          file.type.startsWith('image/') 
-                            ? 'bg-blue-100 text-blue-800' 
-                            : 'bg-purple-100 text-purple-800'
-                        }`}>
-                          {file.type.startsWith('image/') ? '📷 Foto' : '🎥 Vídeo'}
-                        </span>
+
+                {/* Two Column Layout */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  {/* Galeria de Mídia */}
+                  <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6">
+                    <div className="flex items-center space-x-3 mb-4">
+                      <div className="text-2xl">🖼️</div>
+                      <div>
+                        <h3 className="text-lg font-bold text-blue-900">Galeria de Mídia</h3>
+                        <p className="text-sm text-blue-700">Fotos e vídeos do perfil ({formData.galleryMedia.length})</p>
                       </div>
                     </div>
-                  ))}
+                    
+                    <div className="space-y-3 min-h-[200px]">
+                      {formData.galleryMedia.map((file, index) => (
+                        <div key={`gallery-${index}`} className="flex items-center space-x-3 p-3 bg-white rounded-lg border">
+                          <div className="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+                            {file.type.startsWith('image/') ? (
+                              <img
+                                src={URL.createObjectURL(file)}
+                                alt="Preview"
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <span className="text-lg">🎥</span>
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
+                            <p className="text-xs text-gray-500">
+                              {file.type.startsWith('image/') ? '📷 Foto' : '🎥 Vídeo'}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => moveFromGallery(index)}
+                            className="text-red-600 hover:text-red-700 text-sm font-medium"
+                          >
+                            Mover
+                          </button>
+                        </div>
+                      ))}
+                      
+                      {formData.galleryMedia.length === 0 && (
+                        <div className="text-center py-8 text-blue-600">
+                          <div className="text-2xl mb-2">📁</div>
+                          <p className="text-sm">Arraste arquivos aqui para a Galeria</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Mídia de Comparação */}
+                  <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-6">
+                    <div className="flex items-center space-x-3 mb-4">
+                      <div className="text-2xl">📊</div>
+                      <div>
+                        <h3 className="text-lg font-bold text-purple-900">Mídia de Comparação</h3>
+                        <p className="text-sm text-purple-700">Vídeos para comparação ({formData.comparisonMedia.length})</p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3 min-h-[200px]">
+                      {formData.comparisonMedia.map((file, index) => (
+                        <div key={`comparison-${index}`} className="flex items-center space-x-3 p-3 bg-white rounded-lg border">
+                          <div className="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+                            {file.type.startsWith('image/') ? (
+                              <img
+                                src={URL.createObjectURL(file)}
+                                alt="Preview"
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <span className="text-lg">🎥</span>
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
+                            <p className="text-xs text-gray-500">
+                              {file.type.startsWith('image/') ? '📷 Foto' : '🎥 Vídeo'}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => moveFromComparison(index)}
+                            className="text-red-600 hover:text-red-700 text-sm font-medium"
+                          >
+                            Mover
+                          </button>
+                        </div>
+                      ))}
+                      
+                      {formData.comparisonMedia.length === 0 && (
+                        <div className="text-center py-8 text-purple-600">
+                          <div className="text-2xl mb-2">📁</div>
+                          <p className="text-sm">Arraste arquivos aqui para Comparação</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
+
+                {/* Unassigned Files */}
+                {formData.photos.length > 0 && (
+                  <div className="bg-gray-50 border-2 border-gray-200 rounded-lg p-6">
+                    <div className="flex items-center space-x-3 mb-4">
+                      <div className="text-2xl">📋</div>
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900">Arquivos Não Organizados</h3>
+                        <p className="text-sm text-gray-600">Selecione onde cada arquivo deve ir</p>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {formData.photos.map((file, index) => (
+                        <div key={`unassigned-${index}`} className="bg-white border rounded-lg p-4">
+                          <div className="w-full h-24 bg-gray-200 rounded-lg overflow-hidden mb-3">
+                            {file.type.startsWith('image/') ? (
+                              <img
+                                src={URL.createObjectURL(file)}
+                                alt="Preview"
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <span className="text-2xl">🎥</span>
+                              </div>
+                            )}
+                          </div>
+                          <p className="text-sm font-medium text-gray-900 truncate mb-2">{file.name}</p>
+                          <div className="flex space-x-2">
+                            <button
+                              onClick={() => moveToGallery(index)}
+                              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs py-2 px-3 rounded transition duration-200"
+                            >
+                              Galeria
+                            </button>
+                            <button
+                              onClick={() => moveToComparison(index)}
+                              className="flex-1 bg-purple-600 hover:bg-purple-700 text-white text-xs py-2 px-3 rounded transition duration-200"
+                            >
+                              Comparação
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
-            {/* Media Sections */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Galeria de Mídia */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="text-2xl">🖼️</div>
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900">Galeria de Mídia</h3>
-                    <p className="text-sm text-gray-600">Fotos e vídeos do seu perfil</p>
-                  </div>
-                </div>
-                
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-2 text-sm">
-                    <span className="text-green-600">✓</span>
-                    <span>Fotos profissionais</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm">
-                    <span className="text-green-600">✓</span>
-                    <span>Vídeos curtos</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm">
-                    <span className="text-green-600">✓</span>
-                    <span>Mídia verificada</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm">
-                    <span className="text-green-600">✓</span>
-                    <span>Visível no perfil</span>
-                  </div>
-                </div>
-                
-                <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                  <p className="text-xs text-blue-800">
-                    <strong>Dica:</strong> Use fotos de boa qualidade e vídeos curtos para mostrar sua personalidade.
-                  </p>
-                </div>
-              </div>
-
-              {/* Mídia de Comparação */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="text-2xl">📊</div>
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900">Mídia de Comparação</h3>
-                    <p className="text-sm text-gray-600">Vídeos para comparação</p>
-                  </div>
-                </div>
-                
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-2 text-sm">
-                    <span className="text-purple-600">🎥</span>
-                    <span>Vídeos de demonstração</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm">
-                    <span className="text-purple-600">🎥</span>
-                    <span>Story-like format</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm">
-                    <span className="text-purple-600">🎥</span>
-                    <span>Comparação visual</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm">
-                    <span className="text-purple-600">🎥</span>
-                    <span>Seção especial</span>
-                  </div>
-                </div>
-                
-                <div className="mt-4 p-3 bg-purple-50 rounded-lg">
-                  <p className="text-xs text-purple-800">
-                    <strong>Dica:</strong> Vídeos serão usados na seção "Mídia de Comparação" para mostrar suas características.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Upload Progress Info */}
+            {/* Info Section */}
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
               <div className="flex items-start space-x-3">
                 <div className="text-yellow-600 text-lg">ℹ️</div>
                 <div className="text-sm text-yellow-800">
-                  <p className="font-medium mb-1">Como suas mídias serão organizadas:</p>
+                  <p className="font-medium mb-1">Como organizar suas mídias:</p>
                   <ul className="space-y-1">
-                    <li>• <strong>Fotos:</strong> Aparecem na "Galeria de Mídia" do seu perfil</li>
-                    <li>• <strong>Vídeos:</strong> Podem ser usados tanto na "Galeria" quanto na "Mídia de Comparação"</li>
-                    <li>• <strong>Verificação:</strong> Todas as mídias serão marcadas como verificadas</li>
-                    <li>• <strong>Qualidade:</strong> Recomendamos imagens de alta qualidade para melhor resultado</li>
+                    <li>• <strong>Galeria de Mídia:</strong> Fotos e vídeos que aparecem no seu perfil público</li>
+                    <li>• <strong>Mídia de Comparação:</strong> Vídeos especiais para a seção de comparação</li>
+                    <li>• <strong>Dica:</strong> Use fotos de alta qualidade na Galeria e vídeos demonstrativos na Comparação</li>
                   </ul>
                 </div>
               </div>

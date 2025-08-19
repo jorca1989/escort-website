@@ -36,6 +36,19 @@ model Profile {
   bio         String?
   location    String?
   phone       String?
+  gender      String?
+  preference  String?
+  weight      String?
+  height      String?
+  ethnicity   String?
+  eyeColor    String?
+  hair        String?
+  shoeSize    String?
+  silicone    String?
+  tattoos     String?
+  piercings   String?
+  smoker      String?
+  languages   String?
   isVerified  Boolean   @default(false)
   isOnline    Boolean   @default(false)
   rating      Float     @default(0)
@@ -50,7 +63,7 @@ model Listing {
   id          String    @id @default(cuid())
   title       String
   description String
-  price       Float
+  price       Float?
   location    String
   city        String
   age         Int

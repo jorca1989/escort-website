@@ -798,196 +798,168 @@ export default function CriarAnuncioPage() {
       case 5:
         return (
           <div className="space-y-8">
-            {/* Main Upload Section */}
-            <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-              <div className="space-y-4">
-                <div className="text-4xl">📸</div>
-                <h3 className="text-lg font-medium text-gray-900">Adicionar Fotos e Vídeos</h3>
-                <p className="text-sm text-gray-600">
-                  Arraste arquivos aqui ou clique para selecionar
-                </p>
-                <div className="flex justify-center">
-                  <label className="bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-lg cursor-pointer transition duration-200">
-                    <input
-                      type="file"
-                      multiple
-                      accept="image/*,video/*"
-                      onChange={addFiles}
-                      className="hidden"
-                    />
-                    Escolher Arquivos
-                  </label>
+            {/* Two Column Layout with Separate Upload Widgets */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Galeria de Mídia Upload */}
+              <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="text-2xl">🖼️</div>
+                  <div>
+                    <h3 className="text-lg font-bold text-blue-900">Galeria de Mídia</h3>
+                    <p className="text-sm text-blue-700">Fotos e vídeos do perfil ({formData.galleryMedia.length})</p>
+                  </div>
                 </div>
-                <p className="text-xs text-gray-500">
-                  Formatos: JPG, PNG, MP4, MOV • Máximo: 5MB por arquivo • Total: 10 arquivos
-                </p>
+                
+                {/* Upload Widget for Gallery */}
+                <div className="bg-white border-2 border-dashed border-blue-300 rounded-lg p-6 text-center mb-4">
+                  <div className="space-y-3">
+                    <div className="text-2xl">📸</div>
+                    <h4 className="text-sm font-medium text-blue-900">Adicionar à Galeria</h4>
+                    <p className="text-xs text-blue-600">Fotos e vídeos para o perfil público</p>
+                    <div className="flex justify-center">
+                      <label className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg cursor-pointer transition duration-200 text-sm">
+                        <input
+                          type="file"
+                          multiple
+                          accept="image/*,video/*"
+                          onChange={(e) => {
+                            if (e.target.files) {
+                              const newFiles = Array.from(e.target.files);
+                              setFormData(prev => ({
+                                ...prev,
+                                galleryMedia: [...prev.galleryMedia, ...newFiles].slice(0, 10)
+                              }));
+                            }
+                          }}
+                          className="hidden"
+                        />
+                        Escolher Arquivos
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Gallery Files Display */}
+                <div className="space-y-3 min-h-[200px]">
+                  {formData.galleryMedia.map((file, index) => (
+                    <div key={`gallery-${index}`} className="flex items-center space-x-3 p-3 bg-white rounded-lg border">
+                      <div className="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+                        {file.type.startsWith('image/') ? (
+                          <img
+                            src={URL.createObjectURL(file)}
+                            alt="Preview"
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <span className="text-lg">🎥</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
+                        <p className="text-xs text-gray-500">
+                          {file.type.startsWith('image/') ? '📷 Foto' : '🎥 Vídeo'}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setFormData(prev => ({
+                            ...prev,
+                            galleryMedia: prev.galleryMedia.filter((_, i) => i !== index)
+                          }));
+                        }}
+                        className="text-red-600 hover:text-red-700 text-sm font-medium"
+                      >
+                        Remover
+                      </button>
+                    </div>
+                  ))}
+                  
+                  {formData.galleryMedia.length === 0 && (
+                    <div className="text-center py-8 text-blue-600">
+                      <div className="text-2xl mb-2">📁</div>
+                      <p className="text-sm">Nenhum arquivo na galeria</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Mídia de Comparação Upload */}
+              <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="text-2xl">📊</div>
+                  <div>
+                    <h3 className="text-lg font-bold text-purple-900">Mídia de Comparação</h3>
+                    <p className="text-sm text-purple-700">Vídeos para comparação ({formData.comparisonMedia.length})</p>
+                  </div>
+                </div>
+                
+                {/* Upload Widget for Comparison */}
+                <div className="bg-white border-2 border-dashed border-purple-300 rounded-lg p-6 text-center mb-4">
+                  <div className="space-y-3">
+                    <div className="text-2xl">🎥</div>
+                    <h4 className="text-sm font-medium text-purple-900">Adicionar à Comparação</h4>
+                    <p className="text-xs text-purple-600">Vídeos especiais para demonstração</p>
+                    <div className="flex justify-center">
+                      <label className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg cursor-pointer transition duration-200 text-sm">
+                        <input
+                          type="file"
+                          multiple
+                          accept="video/*"
+                          onChange={(e) => {
+                            if (e.target.files) {
+                              const newFiles = Array.from(e.target.files);
+                              setFormData(prev => ({
+                                ...prev,
+                                comparisonMedia: [...prev.comparisonMedia, ...newFiles].slice(0, 5)
+                              }));
+                            }
+                          }}
+                          className="hidden"
+                        />
+                        Escolher Vídeos
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Comparison Files Display */}
+                <div className="space-y-3 min-h-[200px]">
+                  {formData.comparisonMedia.map((file, index) => (
+                    <div key={`comparison-${index}`} className="flex items-center space-x-3 p-3 bg-white rounded-lg border">
+                      <div className="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+                        <div className="w-full h-full flex items-center justify-center">
+                          <span className="text-lg">🎥</span>
+                        </div>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
+                        <p className="text-xs text-gray-500">🎥 Vídeo de comparação</p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setFormData(prev => ({
+                            ...prev,
+                            comparisonMedia: prev.comparisonMedia.filter((_, i) => i !== index)
+                          }));
+                        }}
+                        className="text-red-600 hover:text-red-700 text-sm font-medium"
+                      >
+                        Remover
+                      </button>
+                    </div>
+                  ))}
+                  
+                  {formData.comparisonMedia.length === 0 && (
+                    <div className="text-center py-8 text-purple-600">
+                      <div className="text-2xl mb-2">📁</div>
+                      <p className="text-sm">Nenhum vídeo de comparação</p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-
-            {/* Media Organization Toggle */}
-            {formData.photos.length > 0 && (
-              <div className="space-y-6">
-                <div className="text-center">
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    Organizar Mídia ({formData.photos.length} arquivos)
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    Arraste ou clique para mover arquivos entre as seções
-                  </p>
-                </div>
-
-                {/* Two Column Layout */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  {/* Galeria de Mídia */}
-                  <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6">
-                    <div className="flex items-center space-x-3 mb-4">
-                      <div className="text-2xl">🖼️</div>
-                      <div>
-                        <h3 className="text-lg font-bold text-blue-900">Galeria de Mídia</h3>
-                        <p className="text-sm text-blue-700">Fotos e vídeos do perfil ({formData.galleryMedia.length})</p>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-3 min-h-[200px]">
-                      {formData.galleryMedia.map((file, index) => (
-                        <div key={`gallery-${index}`} className="flex items-center space-x-3 p-3 bg-white rounded-lg border">
-                          <div className="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
-                            {file.type.startsWith('image/') ? (
-                              <img
-                                src={URL.createObjectURL(file)}
-                                alt="Preview"
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center">
-                                <span className="text-lg">🎥</span>
-                              </div>
-                            )}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
-                            <p className="text-xs text-gray-500">
-                              {file.type.startsWith('image/') ? '📷 Foto' : '🎥 Vídeo'}
-                            </p>
-                          </div>
-                          <button
-                            onClick={() => moveFromGallery(index)}
-                            className="text-red-600 hover:text-red-700 text-sm font-medium"
-                          >
-                            Mover
-                          </button>
-                        </div>
-                      ))}
-                      
-                      {formData.galleryMedia.length === 0 && (
-                        <div className="text-center py-8 text-blue-600">
-                          <div className="text-2xl mb-2">📁</div>
-                          <p className="text-sm">Arraste arquivos aqui para a Galeria</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Mídia de Comparação */}
-                  <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-6">
-                    <div className="flex items-center space-x-3 mb-4">
-                      <div className="text-2xl">📊</div>
-                      <div>
-                        <h3 className="text-lg font-bold text-purple-900">Mídia de Comparação</h3>
-                        <p className="text-sm text-purple-700">Vídeos para comparação ({formData.comparisonMedia.length})</p>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-3 min-h-[200px]">
-                      {formData.comparisonMedia.map((file, index) => (
-                        <div key={`comparison-${index}`} className="flex items-center space-x-3 p-3 bg-white rounded-lg border">
-                          <div className="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
-                            {file.type.startsWith('image/') ? (
-                              <img
-                                src={URL.createObjectURL(file)}
-                                alt="Preview"
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center">
-                                <span className="text-lg">🎥</span>
-                              </div>
-                            )}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
-                            <p className="text-xs text-gray-500">
-                              {file.type.startsWith('image/') ? '📷 Foto' : '🎥 Vídeo'}
-                            </p>
-                          </div>
-                          <button
-                            onClick={() => moveFromComparison(index)}
-                            className="text-red-600 hover:text-red-700 text-sm font-medium"
-                          >
-                            Mover
-                          </button>
-                        </div>
-                      ))}
-                      
-                      {formData.comparisonMedia.length === 0 && (
-                        <div className="text-center py-8 text-purple-600">
-                          <div className="text-2xl mb-2">📁</div>
-                          <p className="text-sm">Arraste arquivos aqui para Comparação</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Unassigned Files */}
-                {formData.photos.length > 0 && (
-                  <div className="bg-gray-50 border-2 border-gray-200 rounded-lg p-6">
-                    <div className="flex items-center space-x-3 mb-4">
-                      <div className="text-2xl">📋</div>
-                      <div>
-                        <h3 className="text-lg font-bold text-gray-900">Arquivos Não Organizados</h3>
-                        <p className="text-sm text-gray-600">Selecione onde cada arquivo deve ir</p>
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {formData.photos.map((file, index) => (
-                        <div key={`unassigned-${index}`} className="bg-white border rounded-lg p-4">
-                          <div className="w-full h-24 bg-gray-200 rounded-lg overflow-hidden mb-3">
-                            {file.type.startsWith('image/') ? (
-                              <img
-                                src={URL.createObjectURL(file)}
-                                alt="Preview"
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center">
-                                <span className="text-2xl">🎥</span>
-                              </div>
-                            )}
-                          </div>
-                          <p className="text-sm font-medium text-gray-900 truncate mb-2">{file.name}</p>
-                          <div className="flex space-x-2">
-                            <button
-                              onClick={() => moveToGallery(index)}
-                              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs py-2 px-3 rounded transition duration-200"
-                            >
-                              Galeria
-                            </button>
-                            <button
-                              onClick={() => moveToComparison(index)}
-                              className="flex-1 bg-purple-600 hover:bg-purple-700 text-white text-xs py-2 px-3 rounded transition duration-200"
-                            >
-                              Comparação
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
 
             {/* Info Section */}
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">

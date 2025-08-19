@@ -550,8 +550,8 @@ export default function CriarAnuncioPage() {
                   'Massagem terapêutica',
                   'Acompanhante VIP',
                   'Serviços especiais',
-                  'Outcall',
-                  'Incall',
+                  'Outcall (Deslocações)',
+                  'Incall (Meu local)',
                   'Dupla'
                 ].map((service) => (
                   <label key={service} className="flex items-center space-x-3">

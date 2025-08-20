@@ -358,6 +358,14 @@ export default function CriarAnuncioPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Form submission triggered manually');
+    
+    // Only proceed if we're on the last step and user clicked the submit button
+    if (currentStep !== steps.length) {
+      console.log('Form submission blocked - not on last step');
+      return;
+    }
+    
     setLoading(true);
     setError('');
 
@@ -399,6 +407,7 @@ export default function CriarAnuncioPage() {
         }
       });
 
+      console.log('Sending form data to API...');
       const response = await fetch('/api/listings/create', {
         method: 'POST',
         body: formDataToSend,
@@ -410,11 +419,13 @@ export default function CriarAnuncioPage() {
         throw new Error(data.error || 'Failed to create listing');
       }
 
+      console.log('Listing created successfully');
       // Clear saved form data after successful submission
       localStorage.removeItem('criarAnuncioFormData');
       router.push('/dashboard');
 
     } catch (error) {
+      console.error('Error creating listing:', error);
       setError(error instanceof Error ? error.message : 'Failed to create listing');
     } finally {
       setLoading(false);

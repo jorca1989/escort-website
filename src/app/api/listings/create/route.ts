@@ -225,7 +225,7 @@ export async function POST(request: NextRequest) {
         status: 'PENDING', // Changed from ACTIVE to PENDING for admin approval
         isPremium: false,
         userId: user.id,
-        price: pricing.local?.oneHour || 0, // Assuming price is for 1 hour local
+        price: pricing.local?.oneHour ? parseFloat(pricing.local.oneHour) : null, // Convert string to float
         minDuration: minDuration || '1h',
         advanceNotice: advanceNotice || '1h',
         acceptsCard: acceptsCard === 'true',

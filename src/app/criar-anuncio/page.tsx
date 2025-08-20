@@ -39,7 +39,6 @@ interface FormData {
   ethnicity: string;
   eyeColor: string;
   shoeSize: string;
-  silicone: string;
   tattoos: string;
   piercings: string;
   smoker: string;
@@ -119,7 +118,6 @@ export default function CriarAnuncioPage() {
     ethnicity: '',
     eyeColor: '',
     shoeSize: '',
-    silicone: '',
     tattoos: '',
     piercings: '',
     smoker: '',
@@ -902,19 +900,6 @@ export default function CriarAnuncioPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Silicone</label>
-                <select
-                  value={formData.silicone}
-                  onChange={(e) => handleInputChange('silicone', e.target.value)}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
-                >
-                  <option value="">Selecione</option>
-                  <option value="Sim">Sim</option>
-                  <option value="Não">Não</option>
-                </select>
-              </div>
-
-              <div>
                 <label className="block text-sm font-medium text-gray-700">Tatuagens</label>
                 <select
                   value={formData.tattoos}
@@ -953,7 +938,7 @@ export default function CriarAnuncioPage() {
               <div className="mt-1 p-3 border border-gray-300 rounded-md bg-white">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                   {['Português', 'Inglês', 'Espanhol', 'Francês', 'Alemão', 'Italiano', 'Russo', 'Chinês', 'Japonês', 'Árabe'].map((lang) => (
-                    <label key={lang} className="flex items-center text-sm">
+                    <label key={lang} className="flex items-center text-sm text-gray-900">
                       <input
                         type="checkbox"
                         checked={formData.languages.includes(lang)}

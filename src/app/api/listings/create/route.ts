@@ -37,6 +37,22 @@ export async function POST(request: NextRequest) {
     const whatsappEnabled = formData.get('whatsappEnabled') === 'true';
     const telegramEnabled = formData.get('telegramEnabled') === 'true';
     
+    // Social Media Links
+    const onlyfans = formData.get('onlyfans') as string;
+    const privacy = formData.get('privacy') as string;
+    const instagram = formData.get('instagram') as string;
+    const twitter = formData.get('twitter') as string;
+    const tiktok = formData.get('tiktok') as string;
+    const snapchat = formData.get('snapchat') as string;
+    const telegramChannel = formData.get('telegramChannel') as string;
+    const whatsappBusiness = formData.get('whatsappBusiness') as string;
+    const beacons = formData.get('beacons') as string;
+    const manyvids = formData.get('manyvids') as string;
+    const chaturbate = formData.get('chaturbate') as string;
+    const myfreecams = formData.get('myfreecams') as string;
+    const livejasmin = formData.get('livejasmin') as string;
+    const linkHubUrl = formData.get('linkHubUrl') as string;
+    
     // Physical details
     const gender = formData.get('gender') as string;
     const preference = formData.get('preference') as string;
@@ -118,6 +134,20 @@ export async function POST(request: NextRequest) {
           phone,
           whatsappEnabled,
           telegramEnabled,
+          onlyfans: onlyfans || null,
+          privacy: privacy || null,
+          instagram: instagram || null,
+          twitter: twitter || null,
+          tiktok: tiktok || null,
+          snapchat: snapchat || null,
+          telegramChannel: telegramChannel || null,
+          whatsappBusiness: whatsappBusiness || null,
+          beacons: beacons || null,
+          manyvids: manyvids || null,
+          chaturbate: chaturbate || null,
+          myfreecams: myfreecams || null,
+          livejasmin: livejasmin || null,
+          linkHubUrl: linkHubUrl || null,
           gender: gender || null,
           preference: preference || null,
           weight: weight || null,
@@ -153,6 +183,20 @@ export async function POST(request: NextRequest) {
           phone,
           whatsappEnabled,
           telegramEnabled,
+          onlyfans: onlyfans || null,
+          privacy: privacy || null,
+          instagram: instagram || null,
+          twitter: twitter || null,
+          tiktok: tiktok || null,
+          snapchat: snapchat || null,
+          telegramChannel: telegramChannel || null,
+          whatsappBusiness: whatsappBusiness || null,
+          beacons: beacons || null,
+          manyvids: manyvids || null,
+          chaturbate: chaturbate || null,
+          myfreecams: myfreecams || null,
+          livejasmin: livejasmin || null,
+          linkHubUrl: linkHubUrl || null,
           gender: gender || null,
           preference: preference || null,
           weight: weight || null,

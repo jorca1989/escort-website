@@ -39,6 +39,23 @@ model Profile {
   phone       String?
   whatsappEnabled Boolean @default(false) // NEW: WhatsApp toggle
   telegramEnabled Boolean @default(false) // NEW: Telegram toggle
+  
+  // Social Media Links
+  onlyfans    String?
+  privacy     String?
+  instagram   String?
+  twitter     String?
+  tiktok      String?
+  snapchat    String?
+  telegramChannel String?
+  whatsappBusiness String?
+  beacons     String?
+  manyvids    String?
+  chaturbate  String?
+  myfreecams  String?
+  livejasmin  String?
+  linkHubUrl  String?   // Generic link hub (Linktree, Bio.link, etc.)
+  
   gender      String?
   preference  String?
   weight      String?

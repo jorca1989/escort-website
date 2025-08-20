@@ -15,6 +15,23 @@ interface FormData {
   whatsappEnabled: boolean; // NEW: WhatsApp toggle
   telegramEnabled: boolean; // NEW: Telegram toggle
   
+  // Social Media Links (Individual Platforms)
+  onlyfans: string;
+  privacy: string;
+  instagram: string;
+  twitter: string;
+  tiktok: string;
+  snapchat: string;
+  telegramChannel: string;
+  whatsappBusiness: string;
+  beacons: string;
+  manyvids: string;
+  chaturbate: string;
+  myfreecams: string;
+  livejasmin: string;
+  // Linktree will be auto-detected from any link hub URL
+  linkHubUrl: string; // Generic field for Linktree, Bio.link, etc.
+  
   // Physical Details
   gender: string;
   preference: string;
@@ -84,6 +101,20 @@ export default function CriarAnuncioPage() {
     description: '',
     whatsappEnabled: false,
     telegramEnabled: false,
+    onlyfans: '',
+    privacy: '',
+    instagram: '',
+    twitter: '',
+    tiktok: '',
+    snapchat: '',
+    telegramChannel: '',
+    whatsappBusiness: '',
+    beacons: '',
+    manyvids: '',
+    chaturbate: '',
+    myfreecams: '',
+    livejasmin: '',
+    linkHubUrl: '',
     gender: '',
     preference: '',
     weight: '',
@@ -121,6 +152,32 @@ export default function CriarAnuncioPage() {
   const [error, setError] = useState('');
   const [showAuthModal, setShowAuthModal] = useState(false);
   const router = useRouter();
+
+  // Smart link detection function
+  const detectPlatform = (url: string) => {
+    if (!url) return '';
+    
+    try {
+      const domain = new URL(url).hostname.toLowerCase();
+      
+      const platforms: Record<string, string> = {
+        'linktr.ee': 'Linktree',
+        'bio.link': 'Bio.link',
+        'beacons.ai': 'Beacons',
+        'carrd.co': 'Carrd',
+        'linkr.com.br': 'Linkr',
+        'meu.link': 'Meu.link',
+        'lnk.bio': 'Lnk.bio',
+        'linkfy.com.br': 'Linkfy',
+        'milkshake.app': 'Milkshake',
+        'tap.bio': 'Tap.bio'
+      };
+      
+      return platforms[domain] || 'Link Hub';
+    } catch {
+      return 'Link Hub';
+    }
+  };
 
   // Load saved form data from localStorage on component mount
   useEffect(() => {
@@ -539,6 +596,191 @@ export default function CriarAnuncioPage() {
               <label className="text-sm text-gray-700">
                 Permitir contato via Telegram
               </label>
+            </div>
+
+            {/* Social Media Links */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Linktree/Bio.link</label>
+                <input
+                  type="url"
+                  value={formData.linkHubUrl}
+                  onChange={(e) => handleInputChange('linkHubUrl', e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                  placeholder="https://linktr.ee/seu_nome"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  {detectPlatform(formData.linkHubUrl)}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">OnlyFans</label>
+                <input
+                  type="url"
+                  value={formData.onlyfans}
+                  onChange={(e) => handleInputChange('onlyfans', e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                  placeholder="https://onlyfans.com/seu_nome"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  {detectPlatform(formData.onlyfans)}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Instagram</label>
+                <input
+                  type="url"
+                  value={formData.instagram}
+                  onChange={(e) => handleInputChange('instagram', e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                  placeholder="https://instagram.com/seu_nome"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  {detectPlatform(formData.instagram)}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Twitter</label>
+                <input
+                  type="url"
+                  value={formData.twitter}
+                  onChange={(e) => handleInputChange('twitter', e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                  placeholder="https://twitter.com/seu_nome"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  {detectPlatform(formData.twitter)}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">TikTok</label>
+                <input
+                  type="url"
+                  value={formData.tiktok}
+                  onChange={(e) => handleInputChange('tiktok', e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                  placeholder="https://tiktok.com/@seu_nome"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  {detectPlatform(formData.tiktok)}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Snapchat</label>
+                <input
+                  type="url"
+                  value={formData.snapchat}
+                  onChange={(e) => handleInputChange('snapchat', e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                  placeholder="https://snapchat.com/add/seu_nome"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  {detectPlatform(formData.snapchat)}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Telegram Channel</label>
+                <input
+                  type="url"
+                  value={formData.telegramChannel}
+                  onChange={(e) => handleInputChange('telegramChannel', e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                  placeholder="https://t.me/seu_nome"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  {detectPlatform(formData.telegramChannel)}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">WhatsApp Business</label>
+                <input
+                  type="url"
+                  value={formData.whatsappBusiness}
+                  onChange={(e) => handleInputChange('whatsappBusiness', e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                  placeholder="https://wa.me/seu_numero"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  {detectPlatform(formData.whatsappBusiness)}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Beacons</label>
+                <input
+                  type="url"
+                  value={formData.beacons}
+                  onChange={(e) => handleInputChange('beacons', e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                  placeholder="https://beacons.ai/seu_nome"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  {detectPlatform(formData.beacons)}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">ManyVids</label>
+                <input
+                  type="url"
+                  value={formData.manyvids}
+                  onChange={(e) => handleInputChange('manyvids', e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                  placeholder="https://manyvids.com/seu_nome"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  {detectPlatform(formData.manyvids)}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Chaturbate</label>
+                <input
+                  type="url"
+                  value={formData.chaturbate}
+                  onChange={(e) => handleInputChange('chaturbate', e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                  placeholder="https://chaturbate.com/seu_nome"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  {detectPlatform(formData.chaturbate)}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">MyFreeCams</label>
+                <input
+                  type="url"
+                  value={formData.myfreecams}
+                  onChange={(e) => handleInputChange('myfreecams', e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                  placeholder="https://myfreecams.com/seu_nome"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  {detectPlatform(formData.myfreecams)}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">LiveJasmin</label>
+                <input
+                  type="url"
+                  value={formData.livejasmin}
+                  onChange={(e) => handleInputChange('livejasmin', e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                  placeholder="https://livejasmin.com/seu_nome"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  {detectPlatform(formData.livejasmin)}
+                </p>
+              </div>
             </div>
           </div>
         );

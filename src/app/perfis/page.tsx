@@ -20,12 +20,26 @@ export default function ProfilesPage() {
   // Filter state
   const [search, setSearch] = useState('');
   const [city, setCity] = useState('');
-  const [categories, setCategories] = useState([
-    { name: 'Feminino', count: 0, checked: false },
-    { name: 'MILF', count: 0, checked: false },
-    { name: 'Trans', count: 0, checked: false },
-    { name: 'VIP', count: 0, checked: false },
-  ]);
+  
+  // Calculate filter counts dynamically
+  const calculateFilterCounts = (): { name: string; count: number; checked: boolean }[] => {
+    const counts = {
+      feminino: allProfiles.filter(p => !p.name.toLowerCase().includes('trans')).length,
+      milf: allProfiles.filter(p => p.age >= 36).length,
+      trans: allProfiles.filter(p => p.name.toLowerCase().includes('trans')).length,
+      vip: allProfiles.filter(p => p.price >= 200).length,
+    };
+
+    return [
+      { name: 'Feminino', count: counts.feminino, checked: false },
+      { name: 'MILF', count: counts.milf, checked: false },
+      { name: 'Trans', count: counts.trans, checked: false },
+      { name: 'VIP', count: counts.vip, checked: false },
+    ];
+  };
+
+  // Update categories with real counts
+  const [categories, setCategories] = useState<{ name: string; count: number; checked: boolean }[]>(calculateFilterCounts());
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [ages, setAges] = useState([
     { label: '18-25', checked: false },
@@ -88,13 +102,24 @@ export default function ProfilesPage() {
     if (city && profile.city.toLowerCase() !== city.toLowerCase()) {
       return false;
     }
-    // Categories (mock: Feminino, MILF, Trans, VIP)
+    // Categories (improved logic)
     const selectedCategories = categories.filter(c => c.checked).map(c => c.name);
     if (selectedCategories.length > 0) {
-      if (selectedCategories.includes('MILF') && profile.age < 36) return false;
-      if (selectedCategories.includes('Trans') && !profile.name.toLowerCase().includes('trans')) return false;
-      if (selectedCategories.includes('VIP') && profile.price < 200) return false;
-      if (selectedCategories.includes('Feminino') && profile.name.toLowerCase().includes('trans')) return false;
+      const matchesCategory = selectedCategories.some(category => {
+        switch (category) {
+          case 'MILF':
+            return profile.age >= 36;
+          case 'Trans':
+            return profile.name.toLowerCase().includes('trans');
+          case 'VIP':
+            return profile.price >= 200;
+          case 'Feminino':
+            return !profile.name.toLowerCase().includes('trans');
+          default:
+            return false;
+        }
+      });
+      if (!matchesCategory) return false;
     }
     // Price
     if (priceRange.min && profile.price < Number(priceRange.min)) return false;
@@ -230,7 +255,7 @@ export default function ProfilesPage() {
                 Todos os Perfis
               </h1>
               <p className="text-gray-600 mt-2">
-                Encontrados <span className="font-semibold text-red-600">1,247</span> perfis
+                Encontrados <span className="font-semibold text-red-600">{filteredProfiles.length}</span> perfis
               </p>
             </div>
             

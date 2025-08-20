@@ -17,10 +17,23 @@ export default function ProfilesPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState('recent');
 
-  // Filter state
-  const [search, setSearch] = useState('');
-  const [city, setCity] = useState('');
-  
+  // Mock profiles array - MUST be defined first
+  const allProfiles: Profile[] = Array.from({ length: 18 }, (_, i) => ({
+    id: i + 1,
+    name: `Sofia ${i + 1}`,
+    age: 20 + (i % 15),
+    city: ['Lisboa', 'Porto', 'Coimbra', 'Braga'][i % 4],
+    height: 155 + (i % 20),
+    weight: 45 + (i % 20),
+    price: 100 + (i * 25),
+    rating: 5,
+    reviews: 10 + (i % 50),
+    isOnline: i % 3 === 0,
+    isVerified: i % 4 === 0,
+    image: `https://images.unsplash.com/photo-151950102${5260 + i}?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80`,
+    description: 'Olá, sou a Sofia! Uma acompanhante elegante e sofisticada, pronta para proporcionar momentos únicos e inesquecíveis. Discreta e carinhosa.'
+  }));
+
   // Calculate filter counts dynamically
   const calculateFilterCounts = (): { name: string; count: number; checked: boolean }[] => {
     const counts = {
@@ -38,6 +51,10 @@ export default function ProfilesPage() {
     ];
   };
 
+  // Filter state
+  const [search, setSearch] = useState('');
+  const [city, setCity] = useState('');
+  
   // Update categories with real counts
   const [categories, setCategories] = useState<{ name: string; count: number; checked: boolean }[]>(calculateFilterCounts());
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
@@ -74,23 +91,6 @@ export default function ProfilesPage() {
     { label: 'Mista', checked: false },
   ]);
   const [cities, setCities] = useState(['Lisboa', 'Porto', 'Coimbra', 'Braga', 'Aveiro', 'Faro']);
-
-  // Mock profiles array
-  const allProfiles: Profile[] = Array.from({ length: 18 }, (_, i) => ({
-    id: i + 1,
-    name: `Sofia ${i + 1}`,
-    age: 20 + (i % 15),
-    city: ['Lisboa', 'Porto', 'Coimbra', 'Braga'][i % 4],
-    height: 155 + (i % 20),
-    weight: 45 + (i % 20),
-    price: 100 + (i * 25),
-    rating: 5,
-    reviews: 10 + (i % 50),
-    isOnline: i % 3 === 0,
-    isVerified: i % 4 === 0,
-    image: `https://images.unsplash.com/photo-151950102${5260 + i}?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80`,
-    description: 'Olá, sou a Sofia! Uma acompanhante elegante e sofisticada, pronta para proporcionar momentos únicos e inesquecíveis. Discreta e carinhosa.'
-  }));
 
   // Filtering logic
   const filteredProfiles = allProfiles.filter(profile => {

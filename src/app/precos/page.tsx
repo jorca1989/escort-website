@@ -447,6 +447,46 @@ export default function PricingPage() {
           </div>
         </div>
 
+        {/* Payment Methods */}
+        <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Métodos de Pagamento</h2>
+            <p className="text-gray-600">Pagamentos seguros e rápidos</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="text-center p-4">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-blue-600 text-2xl">💳</span>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1">Cartões</h3>
+              <p className="text-sm text-gray-600">Visa, Mastercard, American Express</p>
+            </div>
+            
+            <div className="text-center p-4">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-green-600 text-2xl">📱</span>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1">MB WAY</h3>
+              <p className="text-sm text-gray-600">Pagamento móvel português</p>
+            </div>
+            
+            <div className="text-center p-4">
+              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-purple-600 text-2xl">🏦</span>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1">Multibanco</h3>
+              <p className="text-sm text-gray-600">Transferência bancária</p>
+            </div>
+          </div>
+          
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-500">
+              Todos os pagamentos são processados de forma segura pela Stripe
+            </p>
+          </div>
+        </div>
+
         <div className="mt-12 text-center">
           <Link href="/" className="text-purple-600 hover:underline">Voltar à página inicial</Link>
         </div>

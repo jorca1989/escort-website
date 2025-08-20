@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     }
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
+      payment_method_types: ['card', 'ideal', 'sofort'], // Multiple payment options
       mode: 'payment',
       customer_email: email,
       line_items: [
@@ -40,6 +40,14 @@ export async function POST(req: Request) {
         package: creditPackage,
         type: 'credits_purchase',
       },
+      // Billing address collection
+      billing_address_collection: 'required',
+      // Automatic tax calculation
+      automatic_tax: {
+        enabled: true,
+      },
+      // Customer creation for better tracking
+      customer_creation: 'always',
     });
 
     return NextResponse.json({ url: session.url });

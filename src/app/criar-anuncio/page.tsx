@@ -24,13 +24,12 @@ interface FormData {
   snapchat: string;
   telegramChannel: string;
   whatsappBusiness: string;
-  beacons: string;
   manyvids: string;
   chaturbate: string;
   myfreecams: string;
   livejasmin: string;
-  // Linktree will be auto-detected from any link hub URL
-  linkHubUrl: string; // Generic field for Linktree, Bio.link, etc.
+  // Linktree, Bio.link, Beacons, etc. will be auto-detected from this field
+  linkHubUrl: string; // Generic field for Linktree, Bio.link, Beacons, etc.
   
   // Physical Details
   gender: string;
@@ -109,7 +108,6 @@ export default function CriarAnuncioPage() {
     snapchat: '',
     telegramChannel: '',
     whatsappBusiness: '',
-    beacons: '',
     manyvids: '',
     chaturbate: '',
     myfreecams: '',
@@ -709,20 +707,6 @@ export default function CriarAnuncioPage() {
                 />
                 <p className="mt-1 text-xs text-gray-500">
                   {detectPlatform(formData.whatsappBusiness)}
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Beacons</label>
-                <input
-                  type="url"
-                  value={formData.beacons}
-                  onChange={(e) => handleInputChange('beacons', e.target.value)}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
-                  placeholder="https://beacons.ai/seu_nome"
-                />
-                <p className="mt-1 text-xs text-gray-500">
-                  {detectPlatform(formData.beacons)}
                 </p>
               </div>
 

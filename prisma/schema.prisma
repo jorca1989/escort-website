@@ -49,12 +49,11 @@ model Profile {
   snapchat    String?
   telegramChannel String?
   whatsappBusiness String?
-  beacons     String?
   manyvids    String?
   chaturbate  String?
   myfreecams  String?
   livejasmin  String?
-  linkHubUrl  String?   // Generic link hub (Linktree, Bio.link, etc.)
+  linkHubUrl  String?   // Generic link hub (Linktree, Bio.link, Beacons, etc.)
   
   gender      String?
   preference  String?

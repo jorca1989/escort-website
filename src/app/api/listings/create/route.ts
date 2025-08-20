@@ -46,7 +46,6 @@ export async function POST(request: NextRequest) {
     const snapchat = formData.get('snapchat') as string;
     const telegramChannel = formData.get('telegramChannel') as string;
     const whatsappBusiness = formData.get('whatsappBusiness') as string;
-    const beacons = formData.get('beacons') as string;
     const manyvids = formData.get('manyvids') as string;
     const chaturbate = formData.get('chaturbate') as string;
     const myfreecams = formData.get('myfreecams') as string;
@@ -142,7 +141,6 @@ export async function POST(request: NextRequest) {
           snapchat: snapchat || null,
           telegramChannel: telegramChannel || null,
           whatsappBusiness: whatsappBusiness || null,
-          beacons: beacons || null,
           manyvids: manyvids || null,
           chaturbate: chaturbate || null,
           myfreecams: myfreecams || null,
@@ -191,7 +189,6 @@ export async function POST(request: NextRequest) {
           snapchat: snapchat || null,
           telegramChannel: telegramChannel || null,
           whatsappBusiness: whatsappBusiness || null,
-          beacons: beacons || null,
           manyvids: manyvids || null,
           chaturbate: chaturbate || null,
           myfreecams: myfreecams || null,

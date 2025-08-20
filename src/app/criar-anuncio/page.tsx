@@ -356,9 +356,16 @@ export default function CriarAnuncioPage() {
     }
   };
 
+  const handleFileUploadClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('File upload clicked - preventing form submission');
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form submission triggered manually');
+    console.log('Current step:', currentStep, 'Total steps:', steps.length);
     
     // Only proceed if we're on the last step and user clicked the submit button
     if (currentStep !== steps.length) {
@@ -366,6 +373,7 @@ export default function CriarAnuncioPage() {
       return;
     }
     
+    console.log('Proceeding with form submission...');
     setLoading(true);
     setError('');
 
@@ -1465,7 +1473,10 @@ export default function CriarAnuncioPage() {
                     <h4 className="text-sm font-medium text-blue-900">Adicionar à Galeria</h4>
                     <p className="text-xs text-blue-600">Fotos e vídeos para o perfil público</p>
                     <div className="flex justify-center">
-                      <label className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg cursor-pointer transition duration-200 text-sm">
+                      <label 
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg cursor-pointer transition duration-200 text-sm"
+                        onClick={handleFileUploadClick}
+                      >
                         <input
                           type="file"
                           multiple
@@ -1550,7 +1561,10 @@ export default function CriarAnuncioPage() {
                     <h4 className="text-sm font-medium text-purple-900">Adicionar à Comparação</h4>
                     <p className="text-xs text-purple-600">Vídeos especiais para demonstração</p>
                     <div className="flex justify-center">
-                      <label className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg cursor-pointer transition duration-200 text-sm">
+                      <label 
+                        className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg cursor-pointer transition duration-200 text-sm"
+                        onClick={handleFileUploadClick}
+                      >
                         <input
                           type="file"
                           multiple

@@ -16,6 +16,9 @@ model User {
   email         String    @unique
   password      String
   role          Role      @default(USER)
+  isPro         Boolean   @default(false) // NEW: PRO membership
+  proUntil      DateTime? // NEW: PRO expiration
+  credits       Int       @default(0) // NEW: Credit system
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   profile       Profile?
@@ -23,6 +26,8 @@ model User {
   reviews       Review[]
   questions     Question[]
   favorites     Favorite[]
+  subscriptions Subscription[] // NEW: Subscription tracking
+  creditTransactions CreditTransaction[] // NEW: Credit transaction tracking
 }
 
 model Profile {
@@ -95,6 +100,11 @@ model Listing {
   services    String?
   status      ListingStatus @default(ACTIVE)
   isPremium   Boolean   @default(false)
+  isTurbo     Boolean   @default(false) // NEW: TURBO boost
+  isSuperTurbo Boolean  @default(false) // NEW: SUPER TURBO boost
+  expiresAt   DateTime  @default(dbgenerated("(NOW() + INTERVAL '7 days')")) // NEW: 7-day expiration
+  autoRenew   Boolean   @default(false) // NEW: Auto-renewal for PRO users
+  boostUntil  DateTime? // NEW: TURBO/SUPER TURBO expiration
   userId      String
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   images      Image[]
@@ -153,6 +163,33 @@ model Favorite {
   createdAt   DateTime  @default(now())
 }
 
+// NEW: Subscription tracking
+model Subscription {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        SubscriptionType
+  status      SubscriptionStatus @default(ACTIVE)
+  stripeId    String?   // Stripe subscription ID
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelAtPeriodEnd Boolean @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// NEW: Credit transactions
+model CreditTransaction {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        CreditTransactionType
+  amount      Int
+  description String
+  stripeId    String?   // Stripe payment ID
+  createdAt   DateTime  @default(now())
+}
+
 enum Role {
   USER
   ESCORT
@@ -169,4 +206,28 @@ enum ListingStatus {
   ACTIVE
   INACTIVE
   FINISHED
+  EXPIRED // NEW: For expired listings
+}
+
+// NEW: Subscription types
+enum SubscriptionType {
+  PRO_1_MONTH
+  PRO_3_MONTHS
+  PRO_6_MONTHS
+}
+
+// NEW: Subscription status
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+  UNPAID
+}
+
+// NEW: Credit transaction types
+enum CreditTransactionType {
+  PURCHASE
+  USAGE
+  REFUND
+  BONUS
 } 

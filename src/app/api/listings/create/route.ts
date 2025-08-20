@@ -31,8 +31,11 @@ export async function POST(request: NextRequest) {
     const name = formData.get('name') as string;
     const age = parseInt(formData.get('age') as string);
     const city = formData.get('city') as string;
+    const neighborhood = formData.get('neighborhood') as string;
     const phone = formData.get('phone') as string;
     const description = formData.get('description') as string;
+    const whatsappEnabled = formData.get('whatsappEnabled') === 'true';
+    const telegramEnabled = formData.get('telegramEnabled') === 'true';
     
     // Physical details
     const gender = formData.get('gender') as string;
@@ -48,6 +51,13 @@ export async function POST(request: NextRequest) {
     const piercings = formData.get('piercings') as string;
     const smoker = formData.get('smoker') as string;
     const languages = formData.get('languages') as string;
+    
+    // NEW: Additional physical attributes
+    const bodyType = formData.get('bodyType') as string;
+    const hairColor = formData.get('hairColor') as string;
+    const breastSize = formData.get('breastSize') as string;
+    const breastType = formData.get('breastType') as string;
+    const personalityTags = JSON.parse(formData.get('personalityTags') as string || '[]');
     
     // Services and additional details
     const services = JSON.parse(formData.get('services') as string || '[]');
@@ -103,8 +113,11 @@ export async function POST(request: NextRequest) {
           name,
           age,
           city,
+          neighborhood: neighborhood || null,
           description,
           phone,
+          whatsappEnabled,
+          telegramEnabled,
           gender: gender || null,
           preference: preference || null,
           weight: weight || null,
@@ -118,6 +131,11 @@ export async function POST(request: NextRequest) {
           piercings: piercings || null,
           smoker: smoker || null,
           languages: languages || null,
+          bodyType: bodyType || null,
+          hairColor: hairColor || null,
+          breastSize: breastSize || null,
+          breastType: breastType || null,
+          personalityTags,
           bio: description,
           location: city,
         }
@@ -130,8 +148,11 @@ export async function POST(request: NextRequest) {
           name,
           age,
           city,
+          neighborhood: neighborhood || null,
           description,
           phone,
+          whatsappEnabled,
+          telegramEnabled,
           gender: gender || null,
           preference: preference || null,
           weight: weight || null,
@@ -145,6 +166,11 @@ export async function POST(request: NextRequest) {
           piercings: piercings || null,
           smoker: smoker || null,
           languages: languages || null,
+          bodyType: bodyType || null,
+          hairColor: hairColor || null,
+          breastSize: breastSize || null,
+          breastType: breastType || null,
+          personalityTags,
           bio: description,
           location: city,
         }

@@ -32,10 +32,13 @@ model Profile {
   name        String
   age         Int
   city        String
+  neighborhood String?  // NEW: Bairro
   description String?
   bio         String?
   location    String?
   phone       String?
+  whatsappEnabled Boolean @default(false) // NEW: WhatsApp toggle
+  telegramEnabled Boolean @default(false) // NEW: Telegram toggle
   gender      String?
   preference  String?
   weight      String?
@@ -49,6 +52,11 @@ model Profile {
   piercings   String?
   smoker      String?
   languages   String?
+  bodyType    String?   // NEW: Body type
+  hairColor   String?   // NEW: Hair color
+  breastSize  String?   // NEW: Breast size
+  breastType  String?   // NEW: Breast type
+  personalityTags String[] // NEW: Personality tags
   isVerified  Boolean   @default(false)
   isOnline    Boolean   @default(false)
   rating      Float     @default(0)

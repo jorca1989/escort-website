@@ -9,8 +9,11 @@ interface FormData {
   name: string;
   age: string;
   city: string;
+  neighborhood: string; // NEW: Bairro
   phone: string;
   description: string;
+  whatsappEnabled: boolean; // NEW: WhatsApp toggle
+  telegramEnabled: boolean; // NEW: Telegram toggle
   
   // Physical Details
   gender: string;
@@ -26,6 +29,15 @@ interface FormData {
   piercings: string;
   smoker: string;
   languages: string;
+  
+  // NEW: Additional Physical Attributes
+  bodyType: string;
+  hairColor: string;
+  breastSize: string;
+  breastType: string;
+  
+  // NEW: Personality Tags
+  personalityTags: string[];
   
   // Services
   services: string[];
@@ -67,8 +79,11 @@ export default function CriarAnuncioPage() {
     name: '',
     age: '',
     city: '',
+    neighborhood: '',
     phone: '',
     description: '',
+    whatsappEnabled: false,
+    telegramEnabled: false,
     gender: '',
     preference: '',
     weight: '',
@@ -82,6 +97,11 @@ export default function CriarAnuncioPage() {
     piercings: '',
     smoker: '',
     languages: '',
+    bodyType: '',
+    hairColor: '',
+    breastSize: '',
+    breastType: '',
+    personalityTags: [],
     services: [],
     minDuration: '',
     advanceNotice: '',
@@ -283,6 +303,8 @@ export default function CriarAnuncioPage() {
           formDataToSend.append('pricing', JSON.stringify(value));
         } else if (key === 'services') {
           formDataToSend.append('services', JSON.stringify(value));
+        } else if (key === 'personalityTags') {
+          formDataToSend.append('personalityTags', JSON.stringify(value));
         } else {
           formDataToSend.append(key, value as string);
         }
@@ -364,6 +386,18 @@ export default function CriarAnuncioPage() {
             </div>
 
             <div>
+              <label className="block text-sm font-medium text-gray-700">Bairro *</label>
+              <input
+                type="text"
+                value={formData.neighborhood}
+                onChange={(e) => handleInputChange('neighborhood', e.target.value)}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                placeholder="Ex: Bairro Alto, Cedofeita"
+                required
+              />
+            </div>
+
+            <div>
               <label className="block text-sm font-medium text-gray-700">Telefone *</label>
               <input
                 type="tel"
@@ -377,14 +411,134 @@ export default function CriarAnuncioPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">Descrição *</label>
+              
+              {/* Rich Text Toolbar */}
+              <div className="flex items-center space-x-2 mb-2 p-2 bg-gray-50 rounded-t-lg border border-gray-300">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const textarea = document.getElementById('description-textarea') as HTMLTextAreaElement;
+                    const start = textarea.selectionStart;
+                    const end = textarea.selectionEnd;
+                    const text = formData.description;
+                    const before = text.substring(0, start);
+                    const selected = text.substring(start, end);
+                    const after = text.substring(end);
+                    const newText = before + '**' + selected + '**' + after;
+                    handleInputChange('description', newText);
+                  }}
+                  className="px-2 py-1 text-xs font-bold bg-gray-200 hover:bg-gray-300 rounded"
+                  title="Bold"
+                >
+                  B
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const textarea = document.getElementById('description-textarea') as HTMLTextAreaElement;
+                    const start = textarea.selectionStart;
+                    const end = textarea.selectionEnd;
+                    const text = formData.description;
+                    const before = text.substring(0, start);
+                    const selected = text.substring(start, end);
+                    const after = text.substring(end);
+                    const newText = before + '*' + selected + '*' + after;
+                    handleInputChange('description', newText);
+                  }}
+                  className="px-2 py-1 text-xs italic bg-gray-200 hover:bg-gray-300 rounded"
+                  title="Italic"
+                >
+                  I
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const textarea = document.getElementById('description-textarea') as HTMLTextAreaElement;
+                    const start = textarea.selectionStart;
+                    const end = textarea.selectionEnd;
+                    const text = formData.description;
+                    const before = text.substring(0, start);
+                    const selected = text.substring(start, end);
+                    const after = text.substring(end);
+                    const newText = before + '_' + selected + '_' + after;
+                    handleInputChange('description', newText);
+                  }}
+                  className="px-2 py-1 text-xs underline bg-gray-200 hover:bg-gray-300 rounded"
+                  title="Underline"
+                >
+                  U
+                </button>
+                <span className="text-gray-400">|</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const emoji = prompt('Digite um emoji (ex: 😊, 💕, 🔥):');
+                    if (emoji) {
+                      const textarea = document.getElementById('description-textarea') as HTMLTextAreaElement;
+                      const start = textarea.selectionStart;
+                      const text = formData.description;
+                      const before = text.substring(0, start);
+                      const after = text.substring(start);
+                      const newText = before + emoji + after;
+                      handleInputChange('description', newText);
+                    }
+                  }}
+                  className="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded"
+                  title="Add Emoji"
+                >
+                  😊
+                </button>
+              </div>
+              
               <textarea
+                id="description-textarea"
                 rows={4}
                 value={formData.description}
                 onChange={(e) => handleInputChange('description', e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
-                placeholder="Conte um pouco sobre você, sua personalidade, experiência..."
+                className="mt-0 block w-full px-3 py-2 border border-gray-300 rounded-b-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                placeholder="Conte um pouco sobre você, sua personalidade, experiência... Use **texto** para negrito, *texto* para itálico, _texto_ para sublinhado"
                 required
               />
+              
+              {/* Preview */}
+              {formData.description && (
+                <div className="mt-2 p-2 bg-gray-50 rounded text-sm">
+                  <p className="text-gray-600 mb-1">Prévia:</p>
+                  <div className="text-gray-900">
+                    {formData.description
+                      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                      .replace(/_(.*?)_/g, '<u>$1</u>')
+                      .split('\n').map((line, i) => (
+                        <p key={i} dangerouslySetInnerHTML={{ __html: line }} />
+                      ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center space-x-3">
+              <input
+                type="checkbox"
+                checked={formData.whatsappEnabled}
+                onChange={(e) => handleInputChange('whatsappEnabled', e.target.checked)}
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              />
+              <label className="text-sm text-gray-700">
+                Permitir contato via WhatsApp
+              </label>
+            </div>
+
+            <div className="flex items-center space-x-3">
+              <input
+                type="checkbox"
+                checked={formData.telegramEnabled}
+                onChange={(e) => handleInputChange('telegramEnabled', e.target.checked)}
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              />
+              <label className="text-sm text-gray-700">
+                Permitir contato via Telegram
+              </label>
             </div>
           </div>
         );
@@ -580,6 +734,104 @@ export default function CriarAnuncioPage() {
                 />
               </div>
             </div>
+
+            {/* NEW: Personality Tags */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Tags de Personalidade</label>
+              <div className="flex flex-wrap items-center gap-2 mt-1">
+                {formData.personalityTags.map((tag, index) => (
+                  <span key={index} className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                    {tag}
+                    <button
+                      type="button"
+                      onClick={() => setFormData(prev => ({
+                        ...prev,
+                        personalityTags: prev.personalityTags.filter((_, i) => i !== index)
+                      }))}
+                      className="ml-1 text-blue-800 hover:text-blue-900 text-xs font-bold"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => setFormData(prev => ({
+                  ...prev,
+                  personalityTags: [...prev.personalityTags, '']
+                }))}
+                className="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-1 px-3 rounded-lg text-xs"
+              >
+                Adicionar Tag
+              </button>
+            </div>
+
+            {/* NEW: Additional Physical Attributes */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Tipo de Corpo</label>
+                <select
+                  value={formData.bodyType}
+                  onChange={(e) => handleInputChange('bodyType', e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                >
+                  <option value="">Selecione</option>
+                  <option value="Magra">Magra</option>
+                  <option value="Normal">Normal</option>
+                  <option value="Gorda">Gorda</option>
+                  <option value="Musculosa">Musculosa</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Cor do Cabelo</label>
+                <select
+                  value={formData.hairColor}
+                  onChange={(e) => handleInputChange('hairColor', e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                >
+                  <option value="">Selecione</option>
+                  <option value="Preto">Preto</option>
+                  <option value="Castanho">Castanho</option>
+                  <option value="Loiro">Loiro</option>
+                  <option value="Ruivo">Ruivo</option>
+                  <option value="Grisalho">Grisalho</option>
+                  <option value="Colorido">Colorido</option>
+                  <option value="Moreno">Moreno</option>
+                  <option value="Claro">Claro</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Tamanho de Peito</label>
+                <select
+                  value={formData.breastSize}
+                  onChange={(e) => handleInputChange('breastSize', e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                >
+                  <option value="">Selecione</option>
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="D">D</option>
+                  <option value="E">E</option>
+                  <option value="F">F</option>
+                  <option value="G">G</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Tipo de Peito</label>
+                <select
+                  value={formData.breastType}
+                  onChange={(e) => handleInputChange('breastType', e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                >
+                  <option value="">Selecione</option>
+                  <option value="Natural">Natural</option>
+                  <option value="Implante">Implante</option>
+                  <option value="Outro">Outro</option>
+                </select>
+              </div>
+            </div>
           </div>
         );
 
@@ -590,6 +842,7 @@ export default function CriarAnuncioPage() {
               <h3 className="text-lg font-medium text-gray-900 mb-4">Serviços Oferecidos</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
+                  // Basic Services
                   'Acompanhante social',
                   'Massagem relaxante',
                   'Jantar romântico',
@@ -599,7 +852,31 @@ export default function CriarAnuncioPage() {
                   'Serviços especiais',
                   'Outcall (Deslocações)',
                   'Incall (Meu local)',
-                  'Dupla'
+                  'Dupla',
+                  
+                  // Enhanced Services (like competitor)
+                  'Beijo grego',
+                  'Chuva dourada',
+                  'Ejaculação no corpo',
+                  'Fetiches',
+                  'Inversão',
+                  'Massagem tântrica',
+                  'Namoradinha',
+                  'Oral sem camisinha',
+                  'Sadomasoquismo',
+                  'Sexo oral',
+                  'Videochamada',
+                  'Beijos na boca',
+                  'Dupla penetração',
+                  'Fantasia e disfarces',
+                  'Gozo facial',
+                  'Massagem erótica',
+                  'Masturbação',
+                  'Oral até o final',
+                  'Rapidinha',
+                  'Sexo anal',
+                  'Striptease',
+                  'Video e foto'
                 ].map((service) => (
                   <label key={service} className="flex items-center space-x-3">
                     <input

@@ -38,6 +38,27 @@ export default function ProfilesPage() {
     { label: 'Verificado', checked: false },
     { label: 'Com fotos', checked: false },
   ]);
+  const [hairColors, setHairColors] = useState([
+    { label: 'Loiro', checked: false },
+    { label: 'Moreno', checked: false },
+    { label: 'Ruivo', checked: false },
+    { label: 'Preto', checked: false },
+    { label: 'Castanho', checked: false },
+  ]);
+  const [eyeColors, setEyeColors] = useState([
+    { label: 'Azul', checked: false },
+    { label: 'Verde', checked: false },
+    { label: 'Castanho', checked: false },
+    { label: 'Preto', checked: false },
+    { label: 'Cinza', checked: false },
+  ]);
+  const [ethnicities, setEthnicities] = useState([
+    { label: 'Caucasiana', checked: false },
+    { label: 'Africana', checked: false },
+    { label: 'Asiática', checked: false },
+    { label: 'Latina', checked: false },
+    { label: 'Mista', checked: false },
+  ]);
   const [cities, setCities] = useState(['Lisboa', 'Porto', 'Coimbra', 'Braga', 'Aveiro', 'Faro']);
 
   // Mock profiles array
@@ -97,6 +118,28 @@ export default function ProfilesPage() {
       if (selectedAvail.includes('Verificado') && !profile.isVerified) return false;
       // 'Com fotos' always true in mock
     }
+    // Hair Color (mock filtering - in real app this would use actual profile data)
+    const selectedHairColors = hairColors.filter(h => h.checked).map(h => h.label);
+    if (selectedHairColors.length > 0) {
+      // Mock: assign hair colors based on profile ID for demo
+      const mockHairColors = ['Loiro', 'Moreno', 'Ruivo', 'Preto', 'Castanho'];
+      const profileHairColor = mockHairColors[profile.id % mockHairColors.length];
+      if (!selectedHairColors.includes(profileHairColor)) return false;
+    }
+    // Eye Color (mock filtering)
+    const selectedEyeColors = eyeColors.filter(e => e.checked).map(e => e.label);
+    if (selectedEyeColors.length > 0) {
+      const mockEyeColors = ['Azul', 'Verde', 'Castanho', 'Preto', 'Cinza'];
+      const profileEyeColor = mockEyeColors[profile.id % mockEyeColors.length];
+      if (!selectedEyeColors.includes(profileEyeColor)) return false;
+    }
+    // Ethnicity (mock filtering)
+    const selectedEthnicities = ethnicities.filter(e => e.checked).map(e => e.label);
+    if (selectedEthnicities.length > 0) {
+      const mockEthnicities = ['Caucasiana', 'Africana', 'Asiática', 'Latina', 'Mista'];
+      const profileEthnicity = mockEthnicities[profile.id % mockEthnicities.length];
+      if (!selectedEthnicities.includes(profileEthnicity)) return false;
+    }
     return true;
   });
 
@@ -152,6 +195,15 @@ export default function ProfilesPage() {
   const handleAvailabilityChange = (label: string) => {
     setAvailability(availability.map(a => a.label === label ? { ...a, checked: !a.checked } : a));
   };
+  const handleHairColorChange = (label: string) => {
+    setHairColors(hairColors.map(hair => hair.label === label ? { ...hair, checked: !hair.checked } : hair));
+  };
+  const handleEyeColorChange = (label: string) => {
+    setEyeColors(eyeColors.map(eye => eye.label === label ? { ...eye, checked: !eye.checked } : eye));
+  };
+  const handleEthnicityChange = (label: string) => {
+    setEthnicities(ethnicities.map(ethnicity => ethnicity.label === label ? { ...ethnicity, checked: !ethnicity.checked } : ethnicity));
+  };
   const handleClear = () => {
     setSearch('');
     setCity('');
@@ -159,6 +211,9 @@ export default function ProfilesPage() {
     setPriceRange({ min: '', max: '' });
     setAges(ages.map(age => ({ ...age, checked: false })));
     setAvailability(availability.map(a => ({ ...a, checked: false })));
+    setHairColors(hairColors.map(hair => ({ ...hair, checked: false })));
+    setEyeColors(eyeColors.map(eye => ({ ...eye, checked: false })));
+    setEthnicities(ethnicities.map(ethnicity => ({ ...ethnicity, checked: false })));
   };
 
   return (
@@ -244,6 +299,12 @@ export default function ProfilesPage() {
               onAgeChange={handleAgeChange}
               availability={availability}
               onAvailabilityChange={handleAvailabilityChange}
+              hairColors={hairColors}
+              onHairColorChange={handleHairColorChange}
+              eyeColors={eyeColors}
+              onEyeColorChange={handleEyeColorChange}
+              ethnicities={ethnicities}
+              onEthnicityChange={handleEthnicityChange}
               onClear={handleClear}
             />
             {/* Sidebar Banner (only on lg+) */}

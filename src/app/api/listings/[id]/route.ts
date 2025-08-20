@@ -100,10 +100,6 @@ export async function PUT(
         age: body.age,
         phone: body.phone,
         services: body.services,
-        minDuration: body.minDuration,
-        advanceNotice: body.advanceNotice,
-        acceptsCard: body.acceptsCard,
-        regularDiscount: body.regularDiscount,
       }
     });
 

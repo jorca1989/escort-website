@@ -472,8 +472,13 @@ export default function CriarAnuncioPage() {
                     const after = text.substring(end);
                     const newText = before + '**' + selected + '**' + after;
                     handleInputChange('description', newText);
+                    // Set focus back to textarea
+                    setTimeout(() => {
+                      textarea.focus();
+                      textarea.setSelectionRange(start + 2, end + 2);
+                    }, 0);
                   }}
-                  className="px-2 py-1 text-xs font-bold bg-gray-200 hover:bg-gray-300 rounded"
+                  className="px-3 py-1 text-sm font-bold bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors"
                   title="Bold"
                 >
                   B
@@ -490,8 +495,13 @@ export default function CriarAnuncioPage() {
                     const after = text.substring(end);
                     const newText = before + '*' + selected + '*' + after;
                     handleInputChange('description', newText);
+                    // Set focus back to textarea
+                    setTimeout(() => {
+                      textarea.focus();
+                      textarea.setSelectionRange(start + 1, end + 1);
+                    }, 0);
                   }}
-                  className="px-2 py-1 text-xs italic bg-gray-200 hover:bg-gray-300 rounded"
+                  className="px-3 py-1 text-sm italic bg-green-500 hover:bg-green-600 text-white rounded transition-colors"
                   title="Italic"
                 >
                   I
@@ -508,8 +518,13 @@ export default function CriarAnuncioPage() {
                     const after = text.substring(end);
                     const newText = before + '_' + selected + '_' + after;
                     handleInputChange('description', newText);
+                    // Set focus back to textarea
+                    setTimeout(() => {
+                      textarea.focus();
+                      textarea.setSelectionRange(start + 1, end + 1);
+                    }, 0);
                   }}
-                  className="px-2 py-1 text-xs underline bg-gray-200 hover:bg-gray-300 rounded"
+                  className="px-3 py-1 text-sm underline bg-purple-500 hover:bg-purple-600 text-white rounded transition-colors"
                   title="Underline"
                 >
                   U
@@ -518,7 +533,8 @@ export default function CriarAnuncioPage() {
                 <button
                   type="button"
                   onClick={() => {
-                    const emoji = prompt('Digite um emoji (ex: 😊, 💕, 🔥):');
+                    const emojis = ['😊', '💕', '🔥', '✨', '💋', '👄', '💦', '🍑', '🔥', '💯', '⭐', '💎', '🌹', '💖', '😍', '🥵'];
+                    const emoji = prompt('Escolha um emoji ou digite um:\n\n' + emojis.join(' ') + '\n\nOu digite um emoji personalizado:');
                     if (emoji) {
                       const textarea = document.getElementById('description-textarea') as HTMLTextAreaElement;
                       const start = textarea.selectionStart;
@@ -527,9 +543,14 @@ export default function CriarAnuncioPage() {
                       const after = text.substring(start);
                       const newText = before + emoji + after;
                       handleInputChange('description', newText);
+                      // Set focus back to textarea
+                      setTimeout(() => {
+                        textarea.focus();
+                        textarea.setSelectionRange(start + emoji.length, start + emoji.length);
+                      }, 0);
                     }
                   }}
-                  className="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded"
+                  className="px-3 py-1 text-sm bg-yellow-500 hover:bg-yellow-600 text-white rounded transition-colors"
                   title="Add Emoji"
                 >
                   😊

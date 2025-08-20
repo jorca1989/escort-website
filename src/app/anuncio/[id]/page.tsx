@@ -17,6 +17,7 @@ interface Listing {
   user: {
     profile: {
       name: string;
+      age: number;
       description: string;
       neighborhood: string;
       gender: string;

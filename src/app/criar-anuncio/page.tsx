@@ -89,6 +89,7 @@ interface FormData {
 
 export default function CriarAnuncioPage() {
   const [currentStep, setCurrentStep] = useState(1);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     name: '',
     age: '',
@@ -175,16 +176,35 @@ export default function CriarAnuncioPage() {
 
   // Load saved form data from localStorage on component mount
   useEffect(() => {
-    const savedFormData = localStorage.getItem('criarAnuncioFormData');
-    if (savedFormData) {
+    // Load saved data from localStorage
+    const savedData = localStorage.getItem('criarAnuncioFormData');
+    if (savedData) {
       try {
-        const parsed = JSON.parse(savedFormData);
-        setFormData(prev => ({ ...prev, ...parsed }));
+        const parsedData = JSON.parse(savedData);
+        setFormData(prev => ({ ...prev, ...parsedData }));
       } catch (error) {
         console.error('Error loading saved form data:', error);
       }
     }
   }, []);
+
+  useEffect(() => {
+    // Handle clicking outside emoji picker to close it
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (!target.closest('.emoji-picker-container')) {
+        setShowEmojiPicker(false);
+      }
+    };
+
+    if (showEmojiPicker) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showEmojiPicker]);
 
   // Save form data to localStorage whenever it changes
   useEffect(() => {
@@ -215,11 +235,29 @@ export default function CriarAnuncioPage() {
     { number: 5, title: 'Fotos' }
   ];
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: keyof FormData, value: any) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
+  };
+
+  const insertEmoji = (emoji: string) => {
+    const textarea = document.getElementById('description-textarea') as HTMLTextAreaElement;
+    const start = textarea.selectionStart;
+    const text = formData.description;
+    const before = text.substring(0, start);
+    const after = text.substring(start);
+    const newText = before + emoji + after;
+    handleInputChange('description', newText);
+    
+    // Set focus back to textarea
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + emoji.length, start + emoji.length);
+    }, 0);
+    
+    setShowEmojiPicker(false);
   };
 
   const handlePricingChange = (type: 'local' | 'travel', field: string, value: string) => {
@@ -530,31 +568,66 @@ export default function CriarAnuncioPage() {
                   U
                 </button>
                 <span className="text-gray-400">|</span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const emojis = ['😊', '💕', '🔥', '✨', '💋', '👄', '💦', '🍑', '🔥', '💯', '⭐', '💎', '🌹', '💖', '😍', '🥵'];
-                    const emoji = prompt('Escolha um emoji ou digite um:\n\n' + emojis.join(' ') + '\n\nOu digite um emoji personalizado:');
-                    if (emoji) {
-                      const textarea = document.getElementById('description-textarea') as HTMLTextAreaElement;
-                      const start = textarea.selectionStart;
-                      const text = formData.description;
-                      const before = text.substring(0, start);
-                      const after = text.substring(start);
-                      const newText = before + emoji + after;
-                      handleInputChange('description', newText);
-                      // Set focus back to textarea
-                      setTimeout(() => {
-                        textarea.focus();
-                        textarea.setSelectionRange(start + emoji.length, start + emoji.length);
-                      }, 0);
-                    }
-                  }}
-                  className="px-3 py-1 text-sm bg-yellow-500 hover:bg-yellow-600 text-white rounded transition-colors"
-                  title="Add Emoji"
-                >
-                  😊
-                </button>
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                    className="px-3 py-1 text-sm bg-yellow-500 hover:bg-yellow-600 text-white rounded transition-colors"
+                    title="Add Emoji"
+                  >
+                    😊
+                  </button>
+                  
+                  {/* Emoji Picker Dropdown */}
+                  {showEmojiPicker && (
+                    <div className="emoji-picker-container absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-50 p-3 min-w-[280px]">
+                      <div className="text-sm text-gray-600 mb-2">Escolha um emoji:</div>
+                      <div className="grid grid-cols-8 gap-2 mb-3">
+                        {['😊', '💕', '🔥', '✨', '💋', '👄', '💦', '🍑', '💯', '⭐', '💎', '🌹', '💖', '😍', '🥵', '🥺', '😘', '😉', '😋', '😎', '🤗', '🤩', '😇', '😌'].map((emoji) => (
+                          <button
+                            key={emoji}
+                            type="button"
+                            onClick={() => insertEmoji(emoji)}
+                            className="w-8 h-8 text-lg hover:bg-gray-100 rounded transition-colors flex items-center justify-center"
+                            title={emoji}
+                          >
+                            {emoji}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="text-sm text-gray-600 mb-2">Ou digite um emoji personalizado:</div>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          placeholder="Digite um emoji..."
+                          className="flex-1 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-yellow-500"
+                          onKeyPress={(e) => {
+                            if (e.key === 'Enter') {
+                              const input = e.target as HTMLInputElement;
+                              if (input.value.trim()) {
+                                insertEmoji(input.value.trim());
+                                input.value = '';
+                              }
+                            }
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const input = document.querySelector('input[placeholder="Digite um emoji..."]') as HTMLInputElement;
+                            if (input && input.value.trim()) {
+                              insertEmoji(input.value.trim());
+                              input.value = '';
+                            }
+                          }}
+                          className="px-3 py-1 text-sm bg-yellow-500 hover:bg-yellow-600 text-white rounded transition-colors"
+                        >
+                          OK
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
               
               <textarea

@@ -59,9 +59,7 @@ export async function POST(request: NextRequest) {
     const height = formData.get('height') as string;
     const ethnicity = formData.get('ethnicity') as string;
     const eyeColor = formData.get('eyeColor') as string;
-    const hair = formData.get('hair') as string;
     const shoeSize = formData.get('shoeSize') as string;
-    const silicone = formData.get('silicone') as string;
     const tattoos = formData.get('tattoos') as string;
     const piercings = formData.get('piercings') as string;
     const smoker = formData.get('smoker') as string;
@@ -152,9 +150,7 @@ export async function POST(request: NextRequest) {
           height: height || null,
           ethnicity: ethnicity || null,
           eyeColor: eyeColor || null,
-          hair: hair || null,
           shoeSize: shoeSize || null,
-          silicone: silicone || null,
           tattoos: tattoos || null,
           piercings: piercings || null,
           smoker: smoker || null,
@@ -200,9 +196,7 @@ export async function POST(request: NextRequest) {
           height: height || null,
           ethnicity: ethnicity || null,
           eyeColor: eyeColor || null,
-          hair: hair || null,
           shoeSize: shoeSize || null,
-          silicone: silicone || null,
           tattoos: tattoos || null,
           piercings: piercings || null,
           smoker: smoker || null,
@@ -228,9 +222,14 @@ export async function POST(request: NextRequest) {
         age,
         phone,
         services: services.join(', '),
-        status: 'ACTIVE',
+        status: 'PENDING', // Changed from ACTIVE to PENDING for admin approval
         isPremium: false,
-        userId: user.id
+        userId: user.id,
+        price: pricing.local?.oneHour || 0, // Assuming price is for 1 hour local
+        minDuration: minDuration || '1h',
+        advanceNotice: advanceNotice || '1h',
+        acceptsCard: acceptsCard === 'true',
+        regularDiscount: regularDiscount || null,
       }
     });
 

@@ -66,9 +66,7 @@ model Profile {
   height      String?
   ethnicity   String?
   eyeColor    String?
-  hair        String?
   shoeSize    String?
-  silicone    String?
   tattoos     String?
   piercings   String?
   smoker      String?
@@ -98,6 +96,10 @@ model Listing {
   age         Int
   phone       String
   services    String?
+  minDuration String?   // NEW: Minimum duration (15min, 30min, 1h, 2h)
+  advanceNotice String? // NEW: Advance notice required (1h, 2h, 1 day)
+  acceptsCard Boolean   @default(false) // NEW: Accepts card payment
+  regularDiscount String? // NEW: Regular customer discount (5%, 10%, etc.)
   status      ListingStatus @default(ACTIVE)
   isPremium   Boolean   @default(false)
   isTurbo     Boolean   @default(false) // NEW: TURBO boost
@@ -203,6 +205,7 @@ enum MediaType {
 }
 
 enum ListingStatus {
+  PENDING   // NEW: For admin approval
   ACTIVE
   INACTIVE
   FINISHED

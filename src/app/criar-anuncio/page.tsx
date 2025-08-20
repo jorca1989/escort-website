@@ -396,7 +396,6 @@ export default function CriarAnuncioPage() {
                 onChange={(e) => handleInputChange('name', e.target.value)}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
                 placeholder="Seu nome"
-                required
               />
             </div>
 
@@ -411,7 +410,6 @@ export default function CriarAnuncioPage() {
                   onChange={(e) => handleInputChange('age', e.target.value)}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
                   placeholder="25"
-                  required
                 />
               </div>
 
@@ -421,7 +419,6 @@ export default function CriarAnuncioPage() {
                   value={formData.city}
                   onChange={(e) => handleInputChange('city', e.target.value)}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
-                  required
                 >
                   <option value="">Selecione uma cidade</option>
                   <option value="Lisboa">Lisboa</option>
@@ -444,7 +441,6 @@ export default function CriarAnuncioPage() {
                 onChange={(e) => handleInputChange('neighborhood', e.target.value)}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
                 placeholder="Ex: Bairro Alto, Cedofeita"
-                required
               />
             </div>
 
@@ -456,7 +452,6 @@ export default function CriarAnuncioPage() {
                 onChange={(e) => handleInputChange('phone', e.target.value)}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
                 placeholder="+351 912 345 678"
-                required
               />
             </div>
 
@@ -548,7 +543,6 @@ export default function CriarAnuncioPage() {
                 onChange={(e) => handleInputChange('description', e.target.value)}
                 className="mt-0 block w-full px-3 py-2 border border-gray-300 rounded-b-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
                 placeholder="Conte um pouco sobre você, sua personalidade, experiência... Use **texto** para negrito, *texto* para itálico, _texto_ para sublinhado"
-                required
               />
               
               {/* Preview */}

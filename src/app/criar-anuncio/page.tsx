@@ -38,13 +38,12 @@ interface FormData {
   height: string;
   ethnicity: string;
   eyeColor: string;
-  hair: string;
   shoeSize: string;
   silicone: string;
   tattoos: string;
   piercings: string;
   smoker: string;
-  languages: string;
+  languages: string[];
   
   // NEW: Additional Physical Attributes
   bodyType: string;
@@ -119,13 +118,12 @@ export default function CriarAnuncioPage() {
     height: '',
     ethnicity: '',
     eyeColor: '',
-    hair: '',
     shoeSize: '',
     silicone: '',
     tattoos: '',
     piercings: '',
     smoker: '',
-    languages: '',
+    languages: [],
     bodyType: '',
     hairColor: '',
     breastSize: '',
@@ -857,14 +855,12 @@ export default function CriarAnuncioPage() {
                   <option value="Cinzentos">Cinzentos</option>
                 </select>
               </div>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Cabelo</label>
+                <label className="block text-sm font-medium text-gray-700">Cor do Cabelo</label>
                 <select
-                  value={formData.hair}
-                  onChange={(e) => handleInputChange('hair', e.target.value)}
+                  value={formData.hairColor}
+                  onChange={(e) => handleInputChange('hairColor', e.target.value)}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
                 >
                   <option value="">Selecione</option>
@@ -878,7 +874,9 @@ export default function CriarAnuncioPage() {
                   <option value="Claro">Claro</option>
                 </select>
               </div>
+            </div>
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700">Calçado</label>
                 <input
@@ -889,13 +887,22 @@ export default function CriarAnuncioPage() {
                   placeholder={formData.gender === 'Masculino' ? '42' : formData.gender === 'Feminino' ? '37' : '39'}
                 />
               </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Piercings</label>
+                <input
+                  type="text"
+                  value={formData.piercings}
+                  onChange={(e) => handleInputChange('piercings', e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                  placeholder={formData.gender === 'Masculino' ? 'Orelha, nariz' : formData.gender === 'Feminino' ? 'Orelhas, umbigo' : 'Orelhas'}
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  {formData.gender === 'Masculino' ? 'Silicone' : formData.gender === 'Feminino' ? 'Silicone' : 'Silicone'}
-                </label>
+                <label className="block text-sm font-medium text-gray-700">Silicone</label>
                 <select
                   value={formData.silicone}
                   onChange={(e) => handleInputChange('silicone', e.target.value)}
@@ -916,24 +923,14 @@ export default function CriarAnuncioPage() {
                 >
                   <option value="">Selecione</option>
                   <option value="Nenhuma">Nenhuma</option>
-                  <option value="Pequenas">Pequenas</option>
-                  <option value="Frequentes">Frequentes</option>
+                  <option value="1-3">1-3 tatuagens</option>
+                  <option value="4-7">4-7 tatuagens</option>
+                  <option value="8-15">8-15 tatuagens</option>
+                  <option value="16+">16+ tatuagens</option>
+                  <option value="Coberta">Coberta de tatuagens</option>
                 </select>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Piercings</label>
-                <input
-                  type="text"
-                  value={formData.piercings}
-                  onChange={(e) => handleInputChange('piercings', e.target.value)}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
-                  placeholder={formData.gender === 'Masculino' ? 'Orelha, nariz' : formData.gender === 'Feminino' ? 'Orelhas, umbigo' : 'Orelhas'}
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   {formData.gender === 'Masculino' ? 'Fumador' : formData.gender === 'Feminino' ? 'Fumadora' : 'Fumador/a'}
@@ -948,53 +945,85 @@ export default function CriarAnuncioPage() {
                   <option value="Não">Não</option>
                 </select>
               </div>
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Idiomas</label>
-                <input
-                  type="text"
-                  value={formData.languages}
-                  onChange={(e) => handleInputChange('languages', e.target.value)}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
-                  placeholder="PT, EN, ES"
-                />
+            {/* Languages - Multi-select dropdown */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Idiomas</label>
+              <div className="mt-1 p-3 border border-gray-300 rounded-md bg-white">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {['Português', 'Inglês', 'Espanhol', 'Francês', 'Alemão', 'Italiano', 'Russo', 'Chinês', 'Japonês', 'Árabe'].map((lang) => (
+                    <label key={lang} className="flex items-center text-sm">
+                      <input
+                        type="checkbox"
+                        checked={formData.languages.includes(lang)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setFormData(prev => ({
+                              ...prev,
+                              languages: [...prev.languages, lang]
+                            }));
+                          } else {
+                            setFormData(prev => ({
+                              ...prev,
+                              languages: prev.languages.filter(l => l !== lang)
+                            }));
+                          }
+                        }}
+                        className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-2"
+                      />
+                      {lang}
+                    </label>
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* NEW: Personality Tags */}
+            {/* Personality Tags - Improved */}
             <div>
               <label className="block text-sm font-medium text-gray-700">Tags de Personalidade</label>
-              <div className="flex flex-wrap items-center gap-2 mt-1">
-                {formData.personalityTags.map((tag, index) => (
-                  <span key={index} className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                    {tag}
-                    <button
-                      type="button"
-                      onClick={() => setFormData(prev => ({
-                        ...prev,
-                        personalityTags: prev.personalityTags.filter((_, i) => i !== index)
-                      }))}
-                      className="ml-1 text-blue-800 hover:text-blue-900 text-xs font-bold"
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
+              <div className="mt-1">
+                <input
+                  type="text"
+                  placeholder="Digite uma tag e pressione Enter"
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      const input = e.target as HTMLInputElement;
+                      const tag = input.value.trim();
+                      if (tag && !formData.personalityTags.includes(tag)) {
+                        setFormData(prev => ({
+                          ...prev,
+                          personalityTags: [...prev.personalityTags, tag]
+                        }));
+                        input.value = '';
+                      }
+                    }
+                  }}
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
+                />
+                <div className="flex flex-wrap items-center gap-2 mt-2">
+                  {formData.personalityTags.map((tag, index) => (
+                    <span key={index} className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full flex items-center">
+                      {tag}
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({
+                          ...prev,
+                          personalityTags: prev.personalityTags.filter((_, i) => i !== index)
+                        }))}
+                        className="ml-1 text-blue-800 hover:text-blue-900 text-xs font-bold"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
               </div>
-              <button
-                type="button"
-                onClick={() => setFormData(prev => ({
-                  ...prev,
-                  personalityTags: [...prev.personalityTags, '']
-                }))}
-                className="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-1 px-3 rounded-lg text-xs"
-              >
-                Adicionar Tag
-              </button>
             </div>
 
-            {/* NEW: Additional Physical Attributes */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Additional Physical Attributes */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700">Tipo de Corpo</label>
                 <select
@@ -1005,28 +1034,12 @@ export default function CriarAnuncioPage() {
                   <option value="">Selecione</option>
                   <option value="Magra">Magra</option>
                   <option value="Normal">Normal</option>
-                  <option value="Gorda">Gorda</option>
-                  <option value="Musculosa">Musculosa</option>
+                  <option value="Atlética">Atlética</option>
+                  <option value="Curvilínea">Curvilínea</option>
+                  <option value="Plus Size">Plus Size</option>
                 </select>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Cor do Cabelo</label>
-                <select
-                  value={formData.hairColor}
-                  onChange={(e) => handleInputChange('hairColor', e.target.value)}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
-                >
-                  <option value="">Selecione</option>
-                  <option value="Preto">Preto</option>
-                  <option value="Castanho">Castanho</option>
-                  <option value="Loiro">Loiro</option>
-                  <option value="Ruivo">Ruivo</option>
-                  <option value="Grisalho">Grisalho</option>
-                  <option value="Colorido">Colorido</option>
-                  <option value="Moreno">Moreno</option>
-                  <option value="Claro">Claro</option>
-                </select>
-              </div>
+              
               <div>
                 <label className="block text-sm font-medium text-gray-700">Tamanho de Peito</label>
                 <select
@@ -1044,6 +1057,7 @@ export default function CriarAnuncioPage() {
                   <option value="G">G</option>
                 </select>
               </div>
+              
               <div>
                 <label className="block text-sm font-medium text-gray-700">Tipo de Peito</label>
                 <select
@@ -1053,8 +1067,8 @@ export default function CriarAnuncioPage() {
                 >
                   <option value="">Selecione</option>
                   <option value="Natural">Natural</option>
-                  <option value="Implante">Implante</option>
-                  <option value="Outro">Outro</option>
+                  <option value="Silicone">Silicone</option>
+                  <option value="Misto">Misto</option>
                 </select>
               </div>
             </div>

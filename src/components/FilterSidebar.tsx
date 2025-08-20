@@ -50,10 +50,11 @@ export default function FilterSidebar({
 }: FilterSidebarProps) {
   return (
     <div className={`lg:w-1/4 ${showFilters ? 'block' : 'hidden lg:block'}`}>
-      <div className="bg-white rounded-lg shadow-lg p-6 sticky top-24">
-        <h3 className="text-lg font-semibold text-gray-900 mb-6">Filtros</h3>
+      <div className="bg-white rounded-lg shadow-lg p-4 sticky top-24 max-h-[calc(100vh-6rem)] overflow-y-auto">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Filtros</h3>
+        
         {/* Quick Search */}
-        <div className="mb-6">
+        <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">Pesquisa Rápida</label>
           <div className="relative">
             <input
@@ -66,8 +67,9 @@ export default function FilterSidebar({
             <i className="fas fa-search absolute left-3 top-3 text-gray-400"></i>
           </div>
         </div>
+
         {/* City Filter */}
-        <div className="mb-6">
+        <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">Cidade</label>
           <select
             value={city}
@@ -80,10 +82,11 @@ export default function FilterSidebar({
             ))}
           </select>
         </div>
+
         {/* Category Filter */}
-        <div className="mb-6">
+        <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
-          <div className="space-y-2">
+          <div className="space-y-1">
             {categories.map((cat) => (
               <label key={cat.name} className="flex items-center text-gray-700">
                 <input
@@ -98,8 +101,9 @@ export default function FilterSidebar({
             ))}
           </div>
         </div>
+
         {/* Price Range */}
-        <div className="mb-6">
+        <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">Faixa de Preço</label>
           <div className="px-3 py-2">
             <div className="flex items-center space-x-4 mb-3">
@@ -122,10 +126,11 @@ export default function FilterSidebar({
             </div>
           </div>
         </div>
+
         {/* Age Range */}
-        <div className="mb-6">
+        <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">Idade</label>
-          <div className="space-y-2">
+          <div className="space-y-1">
             {ages.map((age) => (
               <label key={age.label} className="flex items-center text-gray-700">
                 <input
@@ -139,10 +144,11 @@ export default function FilterSidebar({
             ))}
           </div>
         </div>
+
         {/* Availability */}
-        <div className="mb-6">
+        <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">Disponibilidade</label>
-          <div className="space-y-2">
+          <div className="space-y-1">
             {availability.map((a) => (
               <label key={a.label} className="flex items-center text-gray-700">
                 <input
@@ -158,9 +164,9 @@ export default function FilterSidebar({
         </div>
 
         {/* Hair Color */}
-        <div className="mb-6">
+        <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">Cor do Cabelo</label>
-          <div className="space-y-2">
+          <div className="space-y-1">
             {hairColors.map((hair) => (
               <label key={hair.label} className="flex items-center text-gray-700">
                 <input
@@ -176,9 +182,9 @@ export default function FilterSidebar({
         </div>
 
         {/* Eye Color */}
-        <div className="mb-6">
+        <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">Cor dos Olhos</label>
-          <div className="space-y-2">
+          <div className="space-y-1">
             {eyeColors.map((eye) => (
               <label key={eye.label} className="flex items-center text-gray-700">
                 <input
@@ -194,9 +200,9 @@ export default function FilterSidebar({
         </div>
 
         {/* Ethnicity */}
-        <div className="mb-6">
+        <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">Etnia</label>
-          <div className="space-y-2">
+          <div className="space-y-1">
             {ethnicities.map((ethnicity) => (
               <label key={ethnicity.label} className="flex items-center text-gray-700">
                 <input
@@ -210,6 +216,7 @@ export default function FilterSidebar({
             ))}
           </div>
         </div>
+
         {/* Clear Filters */}
         <button
           type="button"

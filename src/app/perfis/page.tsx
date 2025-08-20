@@ -307,25 +307,8 @@ export default function ProfilesPage() {
               onEthnicityChange={handleEthnicityChange}
               onClear={handleClear}
             />
-            {/* Sidebar Banner (only on lg+) */}
+            {/* Single Sidebar Banner (only on lg+) */}
             <div className="hidden lg:block relative rounded-lg overflow-hidden border border-gray-200">
-              <img
-                src="/banners/colombian-banner.jpg"
-                alt="Promoção Webcams Premium"
-                className="w-full h-[365px] object-cover"
-              />
-              <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center p-8 gap-3">
-                <h3 className="text-2xl font-bold text-white drop-shadow text-center">Webcams Premium</h3>
-                <p className="text-white text-base drop-shadow text-center leading-tight max-w-xs">
-                  Assista transmissões ao vivo ou agende uma sessão exclusiva com as melhores performers da Colômbia!
-                </p>
-                <button className="bg-red-600 text-white px-5 py-2 rounded font-semibold hover:bg-red-700 transition text-base mt-2">
-                  Agendar Webcam
-                </button>
-              </div>
-            </div>
-            {/* Second Sidebar Banner (only on lg+) */}
-            <div className="hidden lg:block mt-6 relative rounded-lg overflow-hidden border border-gray-200">
               <img
                 src="/banners/colombian-banner.jpg"
                 alt="Promoção Webcams Premium"
@@ -348,18 +331,18 @@ export default function ProfilesPage() {
             {viewMode === 'grid' ? <ProfileGrid profiles={paginatedProfiles} /> : <ProfileList profiles={paginatedProfiles} />}
 
             {/* Horizontal Banner below grid/list, above pagination */}
-            <div className="mt-10 mb-8 relative rounded-xl overflow-hidden border border-gray-200 max-w-5xl mx-auto">
+            <div className="mt-8 mb-6 relative rounded-xl overflow-hidden border border-gray-200 max-w-4xl mx-auto">
               <img
                 src="/banners/colombian-banner.jpg"
                 alt="Promoção Webcams Premium"
-                className="w-full h-48 object-cover"
+                className="w-full h-32 object-cover"
               />
-              <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center p-8 gap-3">
-                <h2 className="text-2xl font-bold text-white drop-shadow">Webcams Premium</h2>
-                <p className="text-lg text-white drop-shadow text-center max-w-2xl">
+              <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center p-6 gap-2">
+                <h2 className="text-xl font-bold text-white drop-shadow">Webcams Premium</h2>
+                <p className="text-sm text-white drop-shadow text-center max-w-xl">
                   Assista transmissões ao vivo ou agende uma sessão exclusiva com as melhores performers da Colômbia!
                 </p>
-                <button className="bg-red-600 text-white px-6 py-3 rounded font-semibold hover:bg-red-700 transition text-lg mt-2 shadow-lg">
+                <button className="bg-red-600 text-white px-4 py-2 rounded font-semibold hover:bg-red-700 transition text-sm mt-1 shadow-lg">
                   Agendar Webcam
                 </button>
               </div>

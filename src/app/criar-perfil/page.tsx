@@ -59,12 +59,8 @@ export default function CriarPerfilPage() {
 
       const result = await response.json();
       
-      // Redirect based on account type
-      if (accountType === 'escort') {
-        router.push('/dashboard/escort');
-      } else {
-        router.push('/dashboard/user');
-      }
+      // Redirect to main dashboard (user will be automatically logged in)
+      router.push('/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create account. Please try again.');
       console.error('Registration error:', err);

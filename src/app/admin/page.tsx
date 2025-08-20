@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -10,6 +11,7 @@ export default function AdminDashboard() {
     totalMedia: 0,
     totalQuestions: 0,
   });
+  const router = useRouter();
 
   useEffect(() => {
     // Fetch stats from API
@@ -26,6 +28,22 @@ export default function AdminDashboard() {
     fetchStats();
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      // Call logout API to clear the cookie
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+      });
+      
+      // Redirect to home page
+      router.push('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Even if API fails, redirect to home
+      router.push('/');
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -36,6 +54,12 @@ export default function AdminDashboard() {
           </button>
           <button className="bg-white text-gray-700 px-4 py-2 rounded-lg border hover:bg-gray-50">
             Import Data
+          </button>
+          <button 
+            onClick={handleLogout}
+            className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition duration-200"
+          >
+            Sair
           </button>
         </div>
       </div>

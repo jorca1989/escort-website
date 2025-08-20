@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { hash } from 'bcryptjs';
+import { sign } from 'jsonwebtoken';
 import { prisma } from '@/lib/prisma';
 
 export async function POST(request: Request) {
@@ -51,14 +52,37 @@ export async function POST(request: Request) {
       return { user };
     });
 
-    return NextResponse.json(
+    // Create JWT token for automatic login
+    const token = sign(
+      { 
+        userId: result.user.id, 
+        email: result.user.email, 
+        role: result.user.role 
+      },
+      process.env.NEXTAUTH_SECRET || 'fallback-secret',
+      { expiresIn: '7d' }
+    );
+
+    // Create response with success message
+    const response = NextResponse.json(
       { 
         message: 'Account created successfully',
         userId: result.user.id,
-        role: result.user.role
+        role: result.user.role,
+        success: true
       },
       { status: 201 }
     );
+
+    // Set authentication cookie
+    response.cookies.set('auth-token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 // 7 days
+    });
+
+    return response;
   } catch (error) {
     console.error('Registration error:', error);
     return NextResponse.json(

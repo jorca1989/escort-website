@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface User {
   id: string;
@@ -33,6 +34,7 @@ export default function DashboardPage() {
   const [user, setUser] = useState<User | null>(null);
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     fetchUserData();
@@ -50,6 +52,22 @@ export default function DashboardPage() {
       console.error('Error fetching user data:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      // Call logout API to clear the cookie
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+      });
+      
+      // Redirect to home page
+      router.push('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Even if API fails, redirect to home
+      router.push('/');
     }
   };
 
@@ -81,6 +99,17 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header with Logout */}
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+          <button
+            onClick={handleLogout}
+            className="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200"
+          >
+            Sair
+          </button>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* My Account Card */}
           <div className="lg:col-span-1">
